@@ -9,34 +9,40 @@ public class ProjectSteps {
     @Steps
     ProjectRestSteps rest;
 
-    @Step("Adam deletes project with id: {0}")
-    public void delete(long projectId) {
+    private String name;
+    private long projectId;
+
+    public long getProjectId() {
+        return projectId;
+    }
+
+    @Step("Adam deletes project '#name'")
+    public void delete() {
         rest.deleteProject(projectId);
 
     }
 
-    @Step("Adam checks if project '{1}' is listed with all projects")
-    public void checkIfIsListed(long projectId, String name) {
+    @Step("Adam checks if project '#name' is listed with all projects")
+    public void checkIfIsListed() {
         rest.sendGetAllProjectsRequest();
         rest.verifyGetAllProjectsResponse(projectId, name);
 
     }
 
 
-    @Step("Adam checks details of '{1}' project")
-    public void checkDetails(long projectId, String name) {
+    @Step("Adam checks details of '#name' project")
+    public void checkDetails() {
         rest.sendGetProjectDetailsRequest(projectId);
         rest.verifyProjectDetailsResponse(projectId, name);
     }
 
 
-
     @Step("Adam create '{0}' project")
-    public long create(String name) {
+    public void create(String name) {
+        this.name = name;
         rest.sendCreateProjectRequest(name);
         rest.verifyCreateProjectResponse(name);
-        return rest.getProjectId();
+        projectId = rest.getProjectId();
     }
-
 
 }

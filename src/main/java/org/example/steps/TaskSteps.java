@@ -6,8 +6,12 @@ import org.hamcrest.Matchers;
 
 public class TaskSteps {
 
-    @Step("Adam checks if task '{0}' is on all tasks list")
-    public void checkIfIsListed(String taskName, long taskId, long projectId) {
+    private long taskId;
+    private long projectId;
+    private String name;
+
+    @Step("Adam checks if task '#name' is on all tasks list")
+    public void checkIfIsListed() {
         String taskQuery = String.format("find { it.id == %d }", taskId);
         String taskContentQuery = taskQuery + ".content";
         String taskProjectIdQuery = taskQuery + ".project_id";
@@ -18,12 +22,12 @@ public class TaskSteps {
                 .then()
                     .assertThat()
                         .statusCode(200)
-                        .body(taskContentQuery, Matchers.equalTo(taskName))
+                        .body(taskContentQuery, Matchers.equalTo(name))
                         .body(taskProjectIdQuery, Matchers.equalTo(projectId));
     }
 
-    @Step("Adam checks '{0}' task details")
-    public void checkDetails(String taskName, long taskId, long projectId) {
+    @Step("Adam checks '#name' task details")
+    public void checkDetails() {
         SerenityRest
                 .given()
                     .pathParam("id", taskId)
@@ -32,15 +36,16 @@ public class TaskSteps {
                 .then()
                     .assertThat()
                         .statusCode(200)
-                        .body("content", Matchers.equalTo(taskName))
+                        .body("content", Matchers.equalTo(name))
                         .body("project_id", Matchers.equalTo(projectId));
     }
 
     @Step("Adam creates '{0}' in project with id: {1}")
-    public long createInProject(String taskName, long projectId) {
+    public void createInProject(String taskName, long projectId) {
         String payload = String.format("{ \"content\":\"%s\", \"project_id\":%d}", taskName, projectId);
-
-        return SerenityRest
+        this.name = taskName;
+        this.projectId = projectId;
+        taskId = SerenityRest
                 .given()
                     .body(payload)
                 .when()

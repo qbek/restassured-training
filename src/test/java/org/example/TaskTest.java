@@ -6,7 +6,6 @@ import org.junit.Test;
 
 public class TaskTest extends Base {
 
-
     @Steps
     private TaskSteps task;
 
@@ -15,10 +14,9 @@ public class TaskTest extends Base {
         String projectName = "Projekt do zadania 3.1";
         String taskName = "Wykonać zadanie 3.1";
 
-        projectId = project.create(projectName);
-        long taskId = task.createInProject(taskName, projectId);
-        task.checkDetails(taskName, taskId, projectId);
-        task.checkIfIsListed(taskName, taskId, projectId);
-
+        project.create(projectName);
+        task.createInProject(taskName, project.getProjectId());
+        task.checkDetails();
+        task.checkIfIsListed();
     }
 }

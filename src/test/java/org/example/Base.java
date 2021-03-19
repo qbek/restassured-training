@@ -25,7 +25,7 @@ public class Base {
 
     @After
     public void cleanup() {
-        project.delete(projectId);
+        project.delete();
     }
 
     protected long projectId;

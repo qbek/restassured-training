@@ -8,9 +8,9 @@ public class ProjectTest extends Base {
     @Test
     public void userCanCreateAProject() {
         String projectName = "Praktykowanie RestAssured";
-        projectId = project.create(projectName);
-        project.checkDetails(projectId, projectName);
-        project.checkIfIsListed(projectId, projectName);
+//        project.create(projectName);
+        project.checkDetails();
+        project.checkIfIsListed();
     }
 
 }
