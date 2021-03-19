@@ -1,6 +1,6 @@
 package org.example.model;
 
-public class Project {
+public class ProjectRequest {
     private String name;
 
 

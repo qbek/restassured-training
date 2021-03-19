@@ -1,6 +1,6 @@
 package org.example;
 
-import org.example.model.Project;
+import org.example.model.ProjectRequest;
 import org.junit.Test;
 
 
@@ -8,12 +8,9 @@ public class ProjectTest extends Base {
 
     @Test
     public void userCanCreateAProject() {
-        String projectName = "Praktykowanie RestAssured";
-
-        Project projectData = new Project();
-        projectData.setName("Reprezentacja requestu");
-
-        project.create(projectData);
+        ProjectRequest projectRequestData = new ProjectRequest();
+        projectRequestData.setName(faker.chuckNorris().fact());
+        project.create(projectRequestData);
         project.checkDetails();
         project.checkIfIsListed();
     }

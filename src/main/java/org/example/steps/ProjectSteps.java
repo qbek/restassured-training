@@ -2,7 +2,8 @@ package org.example.steps;
 
 import net.thucydides.core.annotations.Step;
 import net.thucydides.core.annotations.Steps;
-import org.example.model.Project;
+import org.example.model.ProjectRequest;
+import org.example.model.ProjectResponse;
 import org.example.steps.rest.ProjectRestSteps;
 
 public class ProjectSteps {
@@ -11,39 +12,40 @@ public class ProjectSteps {
     ProjectRestSteps rest;
 
     private String name;
-    private long projectId;
+
+    private ProjectResponse responseProject;
 
     public long getProjectId() {
-        return projectId;
+        return responseProject.getId();
     }
 
     @Step("Adam deletes project '#name'")
     public void delete() {
-        rest.deleteProject(projectId);
+        rest.deleteProject(responseProject.getId());
 
     }
 
     @Step("Adam checks if project '#name' is listed with all projects")
     public void checkIfIsListed() {
         rest.sendGetAllProjectsRequest();
-        rest.verifyGetAllProjectsResponse(projectId, name);
+        rest.verifyGetAllProjectsResponse(responseProject);
 
     }
 
 
     @Step("Adam checks details of '#name' project")
     public void checkDetails() {
-        rest.sendGetProjectDetailsRequest(projectId);
-        rest.verifyProjectDetailsResponse(projectId, name);
+        rest.sendGetProjectDetailsRequest(responseProject.getId());
+        rest.verifyProjectDetailsResponse(responseProject);
     }
 
 
     @Step("Adam create '{0}' project")
-    public void create(Project project) {
-        this.name = project.getName();
-        rest.sendCreateProjectRequest(project);
+    public void create(ProjectRequest projectRequest) {
+        this.name = projectRequest.getName();
+        rest.sendCreateProjectRequest(projectRequest);
         rest.verifyCreateProjectResponse(name);
-        projectId = rest.getProjectId();
+        responseProject = rest.getProjectId();
     }
 
 }

@@ -2,19 +2,27 @@ package org.example.steps.rest;
 
 import net.serenitybdd.rest.SerenityRest;
 import net.thucydides.core.annotations.Step;
-import org.example.model.Project;
+import org.example.model.ProjectRequest;
+import org.example.model.ProjectResponse;
 import org.hamcrest.Matchers;
+
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ProjectRestSteps {
 
     @Step
-    public void verifyGetAllProjectsResponse(long projectId, String name) {
-        String projectNameQuery = String.format("find { it.id == %d }.name", projectId);
-        SerenityRest
+    public void verifyGetAllProjectsResponse(ProjectResponse expected) {
+        List<ProjectResponse> actual = SerenityRest
                 .then()
                 .assertThat()
-                .statusCode(200)
-                .body(projectNameQuery, Matchers.equalTo(name));
+                    .statusCode(200)
+                .and().extract().body().jsonPath().getList(".", ProjectResponse.class);
+
+        assertThat("Project is on the list", actual, Matchers.hasItem(Matchers.samePropertyValuesAs(expected)));
+        long count = actual.stream().filter(project -> project.getId() == expected.getId()).count();
+        assertThat("There is only on project", count, Matchers.equalTo((long) 1));
     }
 
     @Step
@@ -26,12 +34,13 @@ public class ProjectRestSteps {
     }
 
     @Step
-    public void verifyProjectDetailsResponse(long projectId, String name) {
-        SerenityRest.then()
+    public void verifyProjectDetailsResponse(ProjectResponse expected) {
+        ProjectResponse actual = SerenityRest.then()
                 .assertThat()
                 .statusCode(200)
-                .body("name", Matchers.equalTo(name))
-                .body("id", Matchers.equalTo(projectId));
+                .and().extract().body().as(ProjectResponse.class);
+
+        assertThat("Projects are equal", actual, Matchers.samePropertyValuesAs(expected));
     }
 
     @Step
@@ -66,17 +75,17 @@ public class ProjectRestSteps {
     }
 
     @Step
-    public void sendCreateProjectRequest(Project project) {
+    public void sendCreateProjectRequest(ProjectRequest projectRequest) {
         SerenityRest
                 .given()
-                .body(project)
+                .body(projectRequest)
                 .when()
                 .post("/projects");
     }
 
-    public long getProjectId() {
+    public ProjectResponse getProjectId() {
         return SerenityRest
-                .then().extract().path("id");
+                .then().extract().body().as(ProjectResponse.class);
     }
 
     @Step

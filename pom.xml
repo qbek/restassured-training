@@ -9,18 +9,23 @@
   <version>1.0-SNAPSHOT</version>
 
   <name>restassured-training</name>
-  <!-- FIXME change it to the project's website -->
+  <!-- FIXME change it to the projectRequest's website -->
   <url>http://www.example.com</url>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <projectRequest.build.sourceEncoding>UTF-8</projectRequest.build.sourceEncoding>
+    <maven.compiler.source>8</maven.compiler.source>
+    <maven.compiler.target>8</maven.compiler.target>
     <serenity.version>2.3.31</serenity.version>
   </properties>
 
   <dependencies>
 
+    <dependency>
+      <groupId>com.github.javafaker</groupId>
+      <artifactId>javafaker</artifactId>
+      <version>1.0.2</version>
+    </dependency>
 
     <dependency>
       <groupId>net.serenity-bdd</groupId>
@@ -88,7 +93,7 @@
           <version>3.7.1</version>
         </plugin>
         <plugin>
-          <artifactId>maven-project-info-reports-plugin</artifactId>
+          <artifactId>maven-projectRequest-info-reports-plugin</artifactId>
           <version>3.0.0</version>
         </plugin>
       </plugins>

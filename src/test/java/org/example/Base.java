@@ -1,5 +1,6 @@
 package org.example;
 
+import com.github.javafaker.Faker;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import net.serenitybdd.junit.runners.SerenityRunner;
@@ -17,6 +18,7 @@ import java.util.Properties;
 public class Base {
 
     private static Properties env;
+    protected static Faker faker = new Faker();
 
     static {
         try {
