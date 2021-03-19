@@ -1,14 +1,18 @@
 package org.example.steps;
 
-import io.restassured.RestAssured;
+import net.serenitybdd.rest.SerenityRest;
+import net.thucydides.core.annotations.Step;
 import org.hamcrest.Matchers;
 
 public class TaskSteps {
+
+    @Step("Adam checks if task '{0}' is on all tasks list")
     public void checkIfIsListed(String taskName, long taskId, long projectId) {
         String taskQuery = String.format("find { it.id == %d }", taskId);
         String taskContentQuery = taskQuery + ".content";
         String taskProjectIdQuery = taskQuery + ".project_id";
-        RestAssured
+        SerenityRest
+                .given()
                 .when()
                     .get("/tasks")
                 .then()
@@ -18,8 +22,9 @@ public class TaskSteps {
                         .body(taskProjectIdQuery, Matchers.equalTo(projectId));
     }
 
+    @Step("Adam checks '{0}' task details")
     public void checkDetails(String taskName, long taskId, long projectId) {
-        RestAssured
+        SerenityRest
                 .given()
                     .pathParam("id", taskId)
                 .when()
@@ -31,10 +36,11 @@ public class TaskSteps {
                         .body("project_id", Matchers.equalTo(projectId));
     }
 
+    @Step("Adam creates '{0}' in project with id: {1}")
     public long createInProject(String taskName, long projectId) {
         String payload = String.format("{ \"content\":\"%s\", \"project_id\":%d}", taskName, projectId);
 
-        return RestAssured
+        return SerenityRest
                 .given()
                     .body(payload)
                 .when()

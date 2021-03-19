@@ -2,12 +2,14 @@ package org.example;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import net.serenitybdd.junit.runners.SerenityRunner;
+import net.thucydides.core.annotations.Steps;
 import org.example.steps.ProjectSteps;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
 
+@RunWith(SerenityRunner.class)
 public class Base {
 
     @Before
@@ -27,6 +29,8 @@ public class Base {
     }
 
     protected long projectId;
-    protected ProjectSteps project = new ProjectSteps();
+
+    @Steps
+    protected ProjectSteps project;
 
 }

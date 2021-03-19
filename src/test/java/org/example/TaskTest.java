@@ -1,17 +1,14 @@
 package org.example;
 
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-import org.example.steps.ProjectSteps;
+import net.thucydides.core.annotations.Steps;
 import org.example.steps.TaskSteps;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 public class TaskTest extends Base {
 
 
-    private TaskSteps task = new TaskSteps();
+    @Steps
+    private TaskSteps task;
 
     @Test
     public void userCanAddTaskToTheProject() {
@@ -22,5 +19,6 @@ public class TaskTest extends Base {
         long taskId = task.createInProject(taskName, projectId);
         task.checkDetails(taskName, taskId, projectId);
         task.checkIfIsListed(taskName, taskId, projectId);
+
     }
 }
