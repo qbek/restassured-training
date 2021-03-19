@@ -2,6 +2,7 @@ package org.example.steps;
 
 import net.thucydides.core.annotations.Step;
 import net.thucydides.core.annotations.Steps;
+import org.example.model.Project;
 import org.example.steps.rest.ProjectRestSteps;
 
 public class ProjectSteps {
@@ -38,9 +39,9 @@ public class ProjectSteps {
 
 
     @Step("Adam create '{0}' project")
-    public void create(String name) {
-        this.name = name;
-        rest.sendCreateProjectRequest(name);
+    public void create(Project project) {
+        this.name = project.getName();
+        rest.sendCreateProjectRequest(project);
         rest.verifyCreateProjectResponse(name);
         projectId = rest.getProjectId();
     }

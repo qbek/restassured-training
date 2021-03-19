@@ -8,18 +8,33 @@ import org.example.steps.ProjectSteps;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
+
+import java.io.IOException;
+import java.util.Properties;
 
 @RunWith(SerenityRunner.class)
 public class Base {
 
+    private static Properties env;
+
+    static {
+        try {
+            String filename = String.format("%s.properties", System.getProperty("env", "prod"));
+            env = PropertiesLoaderUtils.loadAllProperties(filename);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Before
     public void setup() {
-        RestAssured.baseURI = "https://api.todoist.com";
-        RestAssured.basePath = "/rest/v1";
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+        RestAssured.baseURI = env.getProperty("baseUri");
+        RestAssured.basePath = env.getProperty("basePath");
+//        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
 
         RestAssured.requestSpecification = RestAssured.given()
-            .header("Authorization", "Bearer d469ce54eca3a7ca5b6b5e7d4c8d51ced8d4c7b1")
+            .header("Authorization", env.getProperty("token"))
             .contentType(ContentType.JSON);
     }
 

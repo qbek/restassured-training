@@ -2,6 +2,7 @@ package org.example.steps.rest;
 
 import net.serenitybdd.rest.SerenityRest;
 import net.thucydides.core.annotations.Step;
+import org.example.model.Project;
 import org.hamcrest.Matchers;
 
 public class ProjectRestSteps {
@@ -65,11 +66,10 @@ public class ProjectRestSteps {
     }
 
     @Step
-    public void sendCreateProjectRequest(String name) {
-        String payload = String.format("{ \"name\":  \"%s\" }", name);
+    public void sendCreateProjectRequest(Project project) {
         SerenityRest
                 .given()
-                .body(payload)
+                .body(project)
                 .when()
                 .post("/projects");
     }
