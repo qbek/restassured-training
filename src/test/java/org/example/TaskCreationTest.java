@@ -14,20 +14,13 @@ import static org.hamcrest.Matchers.equalTo;
 public class TaskCreationTest extends Base {
 
     @Steps
-    ProjectSteps precoditions;
-
-    @Steps
     TaskSteps steps;
 
     @Test
     public void user_can_add_task_to_the_project() {
-        String projectName = "Projekt dla drugiego testu";
-        String taskName = "Opanować zasadę DRY";
-        long projectId = precoditions.userCreatesAProject(projectName);
-
-        long taskId = steps.userAddsTaskToTheProject(taskName, projectId);
-        steps.userChecksTaskDetails(taskId, taskName, projectId);
-        steps.userChecksIfTaskIsListedWithAllTasks(taskId, taskName, projectId);
+        steps.userAddsTaskToTheProject();
+        steps.userChecksTaskDetails();
+        steps.userChecksIfTaskIsListedWithAllTasks();
     }
 
 }

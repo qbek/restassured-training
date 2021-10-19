@@ -11,9 +11,20 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class TaskSteps {
 
+    private String taskName;
+    private long taskId;
+
+    private long projectId;
+
+    @Steps
+    ProjectSteps project;
+
     @Step
-    public long userAddsTaskToTheProject(String taskName, long projectId) {
-        return SerenityRest
+    public void userAddsTaskToTheProject() {
+        projectId = project.userCreatesAProject();
+        taskName = "to jest moje zadanie";
+
+        taskId = SerenityRest
                 .given()
                 .body(
                         format("{\"content\": \"%s\", \"project_id\":%d}", taskName, projectId)
@@ -30,7 +41,7 @@ public class TaskSteps {
     }
 
     @Step
-    public void userChecksTaskDetails(long taskId, String taskName, long projectId) {
+    public void userChecksTaskDetails() {
         SerenityRest
                 .given()
                     .pathParam("id", taskId)
@@ -44,7 +55,7 @@ public class TaskSteps {
     }
 
     @Step
-    public void userChecksIfTaskIsListedWithAllTasks(long taskId, String taskName, long projectId) {
+    public void userChecksIfTaskIsListedWithAllTasks() {
         SerenityRest
                 .given()
                 .when()

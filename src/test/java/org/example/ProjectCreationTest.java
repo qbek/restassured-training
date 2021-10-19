@@ -15,10 +15,8 @@ public class ProjectCreationTest extends Base {
 
     @Test
     public void user_can_create_a_project() {
-        String projectName = "Szkolenie Rest API dzień 2";
-
-        long projectId = steps.userCreatesAProject(projectName);
-        steps.userChecksProjectDetails(projectId, projectName);
-        steps.userChecksIfProjectIsListedWithAllProjects(projectId, projectName);
+        steps.userCreatesAProject();
+        steps.userChecksProjectDetails();
+        steps.userChecksIfProjectIsListedWithAllProjects();
     }
 }

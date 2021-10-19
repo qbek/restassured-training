@@ -9,9 +9,14 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class ProjectSteps {
 
+    private String projectName;
+    public long projectId;
+
+
     @Step
-    public long userCreatesAProject(String projectName) {
-        return SerenityRest
+    public long userCreatesAProject() {
+        projectName = "To jest moj projekt";
+        projectId =  SerenityRest
                 .given()
                 .body(
                         format("{\"name\": \"%s\"}", projectName)
@@ -25,10 +30,11 @@ public class ProjectSteps {
                 .header("Content-Type", equalTo("application/json"))
                 .and()
                 .extract().path("id");
+        return projectId;
     }
 
     @Step
-    public void userChecksProjectDetails(long projectId, String projectName) {
+    public void userChecksProjectDetails() {
         SerenityRest
                 .given()
                 .pathParam("id", projectId)
@@ -41,7 +47,7 @@ public class ProjectSteps {
     }
 
     @Step
-    public void userChecksIfProjectIsListedWithAllProjects(long projectId, String projectName) {
+    public void userChecksIfProjectIsListedWithAllProjects() {
         SerenityRest
                 .given()
                 .when()
