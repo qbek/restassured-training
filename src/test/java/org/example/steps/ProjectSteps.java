@@ -1,14 +1,17 @@
 package org.example.steps;
 
 import io.restassured.RestAssured;
+import net.serenitybdd.rest.SerenityRest;
+import net.thucydides.core.annotations.Step;
 
 import static java.lang.String.format;
 import static org.hamcrest.Matchers.equalTo;
 
 public class ProjectSteps {
 
+    @Step
     public long userCreatesAProject(String projectName) {
-        return RestAssured
+        return SerenityRest
                 .given()
                 .body(
                         format("{\"name\": \"%s\"}", projectName)
@@ -24,8 +27,9 @@ public class ProjectSteps {
                 .extract().path("id");
     }
 
+    @Step
     public void userChecksProjectDetails(long projectId, String projectName) {
-        RestAssured
+        SerenityRest
                 .given()
                 .pathParam("id", projectId)
                 .when()
@@ -36,10 +40,12 @@ public class ProjectSteps {
                 .body("name", equalTo(projectName));
     }
 
+    @Step
     public void userChecksIfProjectIsListedWithAllProjects(long projectId, String projectName) {
-        RestAssured
+        SerenityRest
+                .given()
                 .when()
-                .get("/projects")
+                    .get("/projects")
                 .then()
                 .assertThat()
                 .body(

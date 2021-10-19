@@ -2,6 +2,7 @@ package org.example;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import net.thucydides.core.annotations.Steps;
 import org.example.steps.ProjectSteps;
 import org.example.steps.TaskSteps;
 import org.junit.Before;
@@ -12,9 +13,12 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class TaskCreationTest extends Base {
 
-    ProjectSteps precoditions = new ProjectSteps();
-    TaskSteps steps = new TaskSteps();
-    
+    @Steps
+    ProjectSteps precoditions;
+
+    @Steps
+    TaskSteps steps;
+
     @Test
     public void user_can_add_task_to_the_project() {
         String projectName = "Projekt dla drugiego testu";

@@ -3,7 +3,7 @@ import org.junit.Test;
 
 public class HelloWorldTest {
 
-    @Test
+//    @Test
     public void helloWrold() {
         System.out.println("Hello world");
 
