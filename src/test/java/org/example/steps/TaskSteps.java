@@ -3,39 +3,36 @@ package org.example.steps;
 import io.cucumber.java.en_lol.AN;
 import io.restassured.RestAssured;
 import net.serenitybdd.rest.SerenityRest;
+import net.thucydides.core.annotations.Shared;
 import net.thucydides.core.annotations.Step;
 import net.thucydides.core.annotations.Steps;
+import org.example.model.TaskRequestPayload;
 
 import static java.lang.String.format;
 import static org.hamcrest.Matchers.equalTo;
 
 public class TaskSteps {
 
-    private String taskName;
+    private TaskRequestPayload task;
     private long taskId;
 
-    private long projectId;
-
-    @Steps
+    @Steps(shared = true)
     ProjectSteps project;
 
     @Step
     public void userAddsTaskToTheProject() {
-        projectId = project.userCreatesAProject();
-        taskName = "to jest moje zadanie";
-
+        task = new TaskRequestPayload("to jest moje zadanie");
+        task.setProject_id(project.getId());
         taskId = SerenityRest
                 .given()
-                .body(
-                        format("{\"content\": \"%s\", \"project_id\":%d}", taskName, projectId)
-                )
+                .body(task)
                 .when()
                 .post("/tasks")
                 .then()
                 .assertThat()
                 .statusCode(200)
-                .body("content", equalTo(taskName))
-                .body("project_id", equalTo(projectId))
+                .body("content", equalTo(task.getContent()))
+                .body("project_id", equalTo(project.getId()))
                 .and()
                 .extract().path("id");
     }
@@ -50,8 +47,8 @@ public class TaskSteps {
                 .then()
                     .assertThat()
                         .statusCode(200)
-                        .body("content", equalTo(taskName))
-                        .body("project_id", equalTo(projectId));
+                        .body("content", equalTo(task.getContent()))
+                        .body("project_id", equalTo(project.getId()));
     }
 
     @Step
@@ -65,11 +62,11 @@ public class TaskSteps {
                         .statusCode(200)
                         .body(
                                 format("find{ it.id == %d }.content", taskId),
-                                equalTo(taskName)
+                                equalTo(task.getContent())
                         )
                         .body(
                                 format("find{ it.id == %d }.project_id", taskId),
-                                equalTo(projectId)
+                                equalTo(project.getId())
                         );
     }
 }

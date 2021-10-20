@@ -16,8 +16,12 @@ public class TaskCreationTest extends Base {
     @Steps
     TaskSteps steps;
 
+    @Steps(shared = true)
+    ProjectSteps precondition;
+
     @Test
     public void user_can_add_task_to_the_project() {
+        precondition.userCreatesAProject();
         steps.userAddsTaskToTheProject();
         steps.userChecksTaskDetails();
         steps.userChecksIfTaskIsListedWithAllTasks();

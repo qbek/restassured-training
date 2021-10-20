@@ -1,49 +1,48 @@
 package org.example.steps;
 
-import io.restassured.RestAssured;
+import com.github.javafaker.Faker;
 import net.serenitybdd.rest.SerenityRest;
 import net.thucydides.core.annotations.Step;
+import org.example.data.RandomDataGenerator;
+import org.example.model.ProjectRequestPayload;
+import org.example.model.ProjectResponsePayload;
 
 import static java.lang.String.format;
 import static org.hamcrest.Matchers.equalTo;
 
 public class ProjectSteps {
 
-    private String projectName;
-    public long projectId;
-
+    private ProjectRequestPayload project;
+    private ProjectResponsePayload response;
 
     @Step
-    public long userCreatesAProject() {
-        projectName = "To jest moj projekt";
-        projectId =  SerenityRest
+    public void userCreatesAProject() {
+        project = new RandomDataGenerator().getProjectData();
+        response =  SerenityRest
                 .given()
-                .body(
-                        format("{\"name\": \"%s\"}", projectName)
-                )
+                .body(project)
                 .when()
                 .post("/projects")
                 .then()
                 .assertThat()
                 .statusCode(200)
-                .body("name", equalTo(projectName))
+                .body("name", equalTo(project.getName()))
                 .header("Content-Type", equalTo("application/json"))
                 .and()
-                .extract().path("id");
-        return projectId;
+                .extract().body().as(ProjectResponsePayload.class);
     }
 
     @Step
     public void userChecksProjectDetails() {
         SerenityRest
                 .given()
-                .pathParam("id", projectId)
+                .pathParam("id", response.getId())
                 .when()
                 .get("/projects/{id}")
                 .then()
                 .assertThat()
                 .statusCode(200)
-                .body("name", equalTo(projectName));
+                .body("name", equalTo(project.getName()));
     }
 
     @Step
@@ -55,8 +54,12 @@ public class ProjectSteps {
                 .then()
                 .assertThat()
                 .body(
-                        format("find{ it.id == %d }.name", projectId),
-                        equalTo(projectName)
+                        format("find{ it.id == %d }.name", response.getId()),
+                        equalTo(project.getName())
                 );
+    }
+
+    public long getId() {
+        return response.getId();
     }
 }
