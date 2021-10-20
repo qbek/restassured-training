@@ -6,7 +6,7 @@ import net.thucydides.core.annotations.Steps;
 import org.example.steps.ProjectSteps;
 import org.junit.Before;
 import org.junit.Test;
-
+x
 
 public class ProjectCreationTest extends Base {
 
