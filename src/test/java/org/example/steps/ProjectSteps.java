@@ -3,11 +3,15 @@ package org.example.steps;
 import com.github.javafaker.Faker;
 import net.serenitybdd.rest.SerenityRest;
 import net.thucydides.core.annotations.Step;
+import org.example.data.DataGenerator;
+import org.example.data.DataGeneratorInterface;
 import org.example.data.RandomDataGenerator;
+import org.example.data.StaticDataGenerator;
 import org.example.model.ProjectRequestPayload;
 import org.example.model.ProjectResponsePayload;
 
 import static java.lang.String.format;
+import static org.example.data.DataGenerator.getProjectData;
 import static org.hamcrest.Matchers.equalTo;
 
 public class ProjectSteps {
@@ -17,7 +21,7 @@ public class ProjectSteps {
 
     @Step
     public void userCreatesAProject() {
-        project = new RandomDataGenerator().getProjectData();
+        project = getProjectData();
         response =  SerenityRest
                 .given()
                 .body(project)

@@ -6,6 +6,7 @@ import net.serenitybdd.rest.SerenityRest;
 import net.thucydides.core.annotations.Shared;
 import net.thucydides.core.annotations.Step;
 import net.thucydides.core.annotations.Steps;
+import org.example.data.DataGenerator;
 import org.example.model.TaskRequestPayload;
 
 import static java.lang.String.format;
@@ -21,7 +22,7 @@ public class TaskSteps {
 
     @Step
     public void userAddsTaskToTheProject() {
-        task = new TaskRequestPayload("to jest moje zadanie");
+        task = DataGenerator.getTaskData();
         task.setProject_id(project.getId());
         taskId = SerenityRest
                 .given()
