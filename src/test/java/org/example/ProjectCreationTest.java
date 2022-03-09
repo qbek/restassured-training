@@ -22,14 +22,23 @@ public class ProjectCreationTest {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
-
     @Test
-    public void user_can_create_a_new_project() {
+    public void Auser_can_create_a_new_project() {
         String projectName = "Szkolenie";
         long projectId = userCreatesANewProject(projectName);
         userChecksProjectDetails(projectId, projectName);
         userChecksAllProjectsList(projectId, projectName);
+    }
 
+    @Test
+    public void Buser_can_add_task_to_the_project() {
+        String taskName = "Opanować asercje";
+        String projectName = "Projekt na zadania";
+        
+        long projectId = userCreatesANewProject(projectName);
+        long taskId = userAddsTaskToTheProject(taskName, projectId);
+        userChecksTaskDetails(taskId, taskName);
+        userChecksAllTasksList(taskId, taskName);
     }
 
     public long userCreatesANewProject(String name) {
@@ -74,4 +83,47 @@ public class ProjectCreationTest {
                         .body(getNameByProjectId, Matchers.equalTo(name));
     }
 
+
+    public long userAddsTaskToTheProject(String name, long projectId) {
+        return RestAssured
+                .given()
+                    .body(
+                            String.format("{ \"content\": \"%s\", \"project_id\": %d}", name, projectId)
+                    )
+                .when()
+                    .post("/tasks")
+                .then()
+                    .assertThat()
+                        .statusCode(200)
+                        .body("content", Matchers.equalTo(name))
+                        .body("project_id", Matchers.equalTo(projectId))
+                    .and()
+                        .extract().path("id");
+    }
+
+    public void userChecksTaskDetails(long id, String name) {
+        RestAssured
+                .given()
+                    .pathParam("id", id)
+                .when()
+                    .get("/tasks/{id}")
+                .then()
+                    .assertThat()
+                        .statusCode(200)
+                        .body("content", Matchers.equalTo(name));
+    }
+
+    public void userChecksAllTasksList(long id, String name) {
+        String getNameByTaskId = String.format("find{it.id == %d}.content", id);
+        RestAssured
+                .given()
+                .when()
+                    .get("/tasks")
+                .then()
+                    .assertThat()
+                        .statusCode(200)
+                        .body(getNameByTaskId, Matchers.equalTo(name));
+    }
+
 }
+
