@@ -10,6 +10,8 @@ import org.example.model.ProjectDetailsResponse;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 
+import java.util.List;
+
 public class ProjectSteps {
 
 //    @Steps
@@ -17,24 +19,18 @@ public class ProjectSteps {
 
     @Step
     public long userCreatesANewProject(String name) {
-
         CreateProjectRequest payload = new CreateProjectRequest(name);
-
-//        example.sampleStep();
         ProjectDetailsResponse createdProject = SerenityRest
                 .given()
-                .body(payload)
+                    .body(payload)
                 .when()
-                .post("/projects")
+                    .post("/projects")
                 .then()
-                .assertThat()
-                    .statusCode(200)
-//                    .body("name", Matchers.equalTo("duap"))
-                .and()
-                .extract().body().as(ProjectDetailsResponse.class);
-
+                    .assertThat()
+                        .statusCode(200)
+                    .and()
+                        .extract().body().as(ProjectDetailsResponse.class);
         checkProjectName(createdProject, name);
-
         return createdProject.getId();
     }
 
@@ -62,13 +58,17 @@ public class ProjectSteps {
         String getNameByProjectId = String.format("find{it.id == %d}.name", id);
 
         //user checks id project is listed with all projects
-        SerenityRest
+        List<ProjectDetailsResponse> projects = SerenityRest
                 .given()
                 .when()
-                .get("/projects")
+                    .get("/projects")
                 .then()
-                .assertThat()
-                .statusCode(200)
-                .body(getNameByProjectId, Matchers.equalTo(name));
+                    .assertThat()
+                        .statusCode(200)
+                        .body(getNameByProjectId, Matchers.equalTo(name))
+                    .and()
+                        .extract().body().jsonPath().getList(".", ProjectDetailsResponse.class);
+
+//        System.out.println(projects);
     }
 }

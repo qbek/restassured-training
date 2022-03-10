@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 import io.restassured.RestAssured;
 import net.serenitybdd.rest.SerenityRest;
 import net.thucydides.core.annotations.Step;
+import org.example.model.CreateTaskRequest;
+import org.example.model.TaskDetailsResponse;
 import org.hamcrest.Matchers;
 
 public class TasksSteps {
@@ -11,20 +13,23 @@ public class TasksSteps {
     @Step
     public long userAddsTaskToTheProject(String name, long projectId) {
 
-        return SerenityRest
+        CreateTaskRequest payload = new CreateTaskRequest(name, projectId);
+
+
+        TaskDetailsResponse createdTask =  SerenityRest
                 .given()
-                .body(
-                        String.format("{ \"content\": \"%s\", \"project_id\": %d}", name, projectId)
-                )
+                .body(payload)
                 .when()
                 .post("/tasks")
                 .then()
                 .assertThat()
-                .statusCode(200)
-                .body("content", Matchers.equalTo(name))
-                .body("project_id", Matchers.equalTo(projectId))
+                    .statusCode(200)
+                    .body("content", Matchers.equalTo(name))
+                    .body("project_id", Matchers.equalTo(projectId))
                 .and()
-                .extract().path("id");
+                    .extract().body().as(TaskDetailsResponse.class);
+
+        return createdTask.getId();
     }
 
     @Step

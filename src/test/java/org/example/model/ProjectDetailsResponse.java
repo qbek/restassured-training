@@ -11,6 +11,15 @@ public class ProjectDetailsResponse {
     private boolean favorite;
     private int sync_id;
     private String url;
+    private boolean inbox_project;
+
+    public boolean getInbox_project() {
+        return inbox_project;
+    }
+
+    public void setInbox_project(boolean inbox_project) {
+        this.inbox_project = inbox_project;
+    }
 
     public long getId() {
         return id;
