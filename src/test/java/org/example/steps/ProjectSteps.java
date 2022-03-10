@@ -5,6 +5,8 @@ import net.serenitybdd.rest.SerenityRest;
 import net.thucydides.core.annotations.Step;
 import net.thucydides.core.annotations.Steps;
 import org.example.model.CreateProjectRequest;
+import org.example.model.Example;
+import org.example.model.ProjectDetailsResponse;
 import org.hamcrest.Matchers;
 
 public class ProjectSteps {
@@ -18,7 +20,7 @@ public class ProjectSteps {
         CreateProjectRequest payload = new CreateProjectRequest(name);
 
 //        example.sampleStep();
-        long projectId = SerenityRest
+        ProjectDetailsResponse createdProject = SerenityRest
                 .given()
                 .body(payload)
                 .when()
@@ -28,8 +30,8 @@ public class ProjectSteps {
                 .statusCode(200)
                 .body("name", Matchers.equalTo(name))
                 .and()
-                .extract().path("id");
-        return projectId;
+                .extract().body().as(ProjectDetailsResponse.class);
+        return createdProject.getId();
     }
 
     @Step("User checks project details")
