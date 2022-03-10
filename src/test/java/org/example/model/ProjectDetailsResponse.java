@@ -83,4 +83,9 @@ public class ProjectDetailsResponse {
     public void setUrl(String url) {
         this.url = url;
     }
+
+    @Override
+    public String toString() {
+        return String.format("project details, name: %s, id: %d", name, id);
+    }
 }

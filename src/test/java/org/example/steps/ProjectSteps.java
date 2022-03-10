@@ -7,6 +7,7 @@ import net.thucydides.core.annotations.Steps;
 import org.example.model.CreateProjectRequest;
 import org.example.model.Example;
 import org.example.model.ProjectDetailsResponse;
+import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 
 public class ProjectSteps {
@@ -27,11 +28,19 @@ public class ProjectSteps {
                 .post("/projects")
                 .then()
                 .assertThat()
-                .statusCode(200)
-                .body("name", Matchers.equalTo(name))
+                    .statusCode(200)
+//                    .body("name", Matchers.equalTo("duap"))
                 .and()
                 .extract().body().as(ProjectDetailsResponse.class);
+
+        checkProjectName(createdProject, name);
+
         return createdProject.getId();
+    }
+
+    @Step("Check if created project has name: {1}")
+    public void checkProjectName(ProjectDetailsResponse project, String expectedName) {
+        MatcherAssert.assertThat("Project has correct name", project.getName(), Matchers.equalTo(expectedName));
     }
 
     @Step("User checks project details")
