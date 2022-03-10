@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import net.serenitybdd.rest.SerenityRest;
 import net.thucydides.core.annotations.Step;
 import net.thucydides.core.annotations.Steps;
+import org.example.model.CreateProjectRequest;
 import org.hamcrest.Matchers;
 
 public class ProjectSteps {
@@ -14,10 +15,12 @@ public class ProjectSteps {
     @Step
     public long userCreatesANewProject(String name) {
 
+        CreateProjectRequest payload = new CreateProjectRequest(name);
+
 //        example.sampleStep();
         long projectId = SerenityRest
                 .given()
-                .body(String.format("{\"name\": \"%s\"}", name))
+                .body(payload)
                 .when()
                 .post("/projects")
                 .then()
