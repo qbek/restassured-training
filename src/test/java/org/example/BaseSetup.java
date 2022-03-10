@@ -8,18 +8,31 @@ import org.example.steps.TasksSteps;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 @RunWith(SerenityRunner.class)
 public class BaseSetup {
 
     @Before
-    public void setup() {
-        RestAssured.baseURI = "https://api.todoist.com";
-        RestAssured.basePath = "/rest/v1";
+    public void setup() throws IOException {
+        String env = System.getProperty("env");
 
+        String filename = "/" + env + ".properties";
+        InputStream propertiesFile = getClass().getResourceAsStream(filename);
+        Properties cfg = new Properties();
+        cfg.load(propertiesFile);
+
+
+        RestAssured.baseURI = cfg.getProperty("baseUrl");
+        RestAssured.basePath = cfg.getProperty("basePath");
+
+        String authValue = String.format("Bearer %s", cfg.getProperty("token"));
         RestAssured.requestSpecification =
                 RestAssured
                         .given()
-                        .headers("Authorization", "Bearer d469ce54eca3a7ca5b6b5e7d4c8d51ced8d4c7b1")
+                        .headers("Authorization", authValue)
                         .contentType(ContentType.JSON);
 
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
