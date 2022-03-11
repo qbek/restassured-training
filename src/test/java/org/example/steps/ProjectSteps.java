@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import net.serenitybdd.rest.SerenityRest;
 import net.thucydides.core.annotations.Step;
 import net.thucydides.core.annotations.Steps;
+import org.example.data.DataGenerator;
 import org.example.model.CreateProjectRequest;
 import org.example.model.Example;
 import org.example.model.ProjectDetailsResponse;
@@ -17,9 +18,19 @@ public class ProjectSteps {
 //    @Steps
 //    ExampleSteps example;
 
+    private String projectName;
+    private long projectId;
+
+    private DataGenerator data = new DataGenerator();
+
+    public long getProjectId() {
+        return projectId;
+    }
+
     @Step
-    public long userCreatesANewProject(String name) {
-        CreateProjectRequest payload = new CreateProjectRequest(name);
+    public void userCreatesANewProject() {
+        projectName = data.getDataGenerator().getProjectName();
+        CreateProjectRequest payload = new CreateProjectRequest(projectName);
         ProjectDetailsResponse createdProject = SerenityRest
                 .given()
                     .body(payload)
@@ -30,32 +41,32 @@ public class ProjectSteps {
                         .statusCode(200)
                     .and()
                         .extract().body().as(ProjectDetailsResponse.class);
-        checkProjectName(createdProject, name);
-        return createdProject.getId();
+        checkProjectName(createdProject);
+        projectId = createdProject.getId();
     }
 
-    @Step("Check if created project has name: {1}")
-    public void checkProjectName(ProjectDetailsResponse project, String expectedName) {
-        MatcherAssert.assertThat("Project has correct name", project.getName(), Matchers.equalTo(expectedName));
+    @Step("Check if created project has name: $projectName")
+    public void checkProjectName(ProjectDetailsResponse project) {
+        MatcherAssert.assertThat("Project has correct name", project.getName(), Matchers.equalTo(projectName));
     }
 
     @Step("User checks project details")
-    public void userChecksProjectDetails(long id, String name) {
+    public void userChecksProjectDetails() {
         SerenityRest
                 .given()
-                .pathParam("id", id)
+                .pathParam("id", projectId)
                 .when()
                 .get("/projects/{id}")
                 .then()
                 .assertThat()
                 .statusCode(200)
-                .body("name", Matchers.equalTo(name))
-                .body("id", Matchers.equalTo(id));
+                .body("name", Matchers.equalTo(projectName))
+                .body("id", Matchers.equalTo(projectId));
     }
 
     @Step("User checks if project with id: {0} and name: {1} is listed with all projects")
-    public void userChecksAllProjectsList(long id, String name) {
-        String getNameByProjectId = String.format("find{it.id == %d}.name", id);
+    public void userChecksAllProjectsList() {
+        String getNameByProjectId = String.format("find{it.id == %d}.name", projectId);
 
         //user checks id project is listed with all projects
         List<ProjectDetailsResponse> projects = SerenityRest
@@ -65,10 +76,8 @@ public class ProjectSteps {
                 .then()
                     .assertThat()
                         .statusCode(200)
-                        .body(getNameByProjectId, Matchers.equalTo(name))
+                        .body(getNameByProjectId, Matchers.equalTo(projectName))
                     .and()
                         .extract().body().jsonPath().getList(".", ProjectDetailsResponse.class);
-
-        System.out.println(projects);
     }
 }

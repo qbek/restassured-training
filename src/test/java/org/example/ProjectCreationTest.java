@@ -13,10 +13,9 @@ public class ProjectCreationTest extends BaseSetup {
 
     @Test
     public void user_can_create_a_new_project() {
-        String projectName = data.getDataGenerator().getProjectName();
-        long projectId = steps.userCreatesANewProject(projectName);
-        steps.userChecksProjectDetails(projectId, projectName);
-        steps.userChecksAllProjectsList(projectId, projectName);
+        steps.userCreatesANewProject();
+        steps.userChecksProjectDetails();
+        steps.userChecksAllProjectsList();
     }
 }
 

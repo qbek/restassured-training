@@ -22,6 +22,6 @@ public class DataGenerator {
                 return generator;
             }
         }
-        return null;
+        throw new RuntimeException("Invalid test data generator in cmd line: " + td);
     }
 }

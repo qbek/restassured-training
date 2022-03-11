@@ -1,21 +1,28 @@
 package org.example.steps;
 
-import com.google.gson.JsonObject;
-import io.restassured.RestAssured;
 import net.serenitybdd.rest.SerenityRest;
 import net.thucydides.core.annotations.Step;
+import net.thucydides.core.annotations.Steps;
+import org.example.data.DataGenerator;
 import org.example.model.CreateTaskRequest;
 import org.example.model.TaskDetailsResponse;
 import org.hamcrest.Matchers;
 
 public class TasksSteps {
 
+    private String taskName;
+    private long taskId;
+
+    private DataGenerator data = new DataGenerator();
+
+    @Steps(shared = true)
+    ProjectSteps preconditions;
+
+
     @Step
-    public long userAddsTaskToTheProject(String name, long projectId) {
-
-        CreateTaskRequest payload = new CreateTaskRequest(name, projectId);
-
-
+    public void userAddsTaskToTheProject() {
+        taskName = data.getDataGenerator().getTaskName();
+        CreateTaskRequest payload = new CreateTaskRequest(taskName, preconditions.getProjectId());
         TaskDetailsResponse createdTask =  SerenityRest
                 .given()
                 .body(payload)
@@ -24,30 +31,30 @@ public class TasksSteps {
                 .then()
                 .assertThat()
                     .statusCode(200)
-                    .body("content", Matchers.equalTo(name))
-                    .body("project_id", Matchers.equalTo(projectId))
+                    .body("content", Matchers.equalTo(taskName))
+                    .body("project_id", Matchers.equalTo(preconditions.getProjectId()))
                 .and()
                     .extract().body().as(TaskDetailsResponse.class);
 
-        return createdTask.getId();
+        taskId =  createdTask.getId();
     }
 
     @Step
-    public void userChecksTaskDetails(long id, String name) {
+    public void userChecksTaskDetails() {
         SerenityRest
                 .given()
-                .pathParam("id", id)
+                .pathParam("id", taskId)
                 .when()
                 .get("/tasks/{id}")
                 .then()
                 .assertThat()
                 .statusCode(200)
-                .body("content", Matchers.equalTo(name));
+                .body("content", Matchers.equalTo(taskName));
     }
 
     @Step
-    public void userChecksAllTasksList(long id, String name) {
-        String getNameByTaskId = String.format("find{it.id == %d}.content", id);
+    public void userChecksAllTasksList() {
+        String getNameByTaskId = String.format("find{it.id == %d}.content", taskId);
         SerenityRest
                 .given()
                 .when()
@@ -55,6 +62,6 @@ public class TasksSteps {
                 .then()
                 .assertThat()
                 .statusCode(200)
-                .body(getNameByTaskId, Matchers.equalTo(name));
+                .body(getNameByTaskId, Matchers.equalTo(taskName));
     }
 }

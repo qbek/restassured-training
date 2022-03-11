@@ -1,5 +1,6 @@
 package org.example;
 
+import com.github.rjeschke.txtmark.Run;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import net.serenitybdd.junit.runners.SerenityRunner;
@@ -21,13 +22,18 @@ public class BaseSetup {
     protected DataGenerator data = new DataGenerator();
 
     @Before
-    public void setup() throws IOException {
+    public void setup() {
         String env = System.getProperty("env");
 
         String filename = "/" + env + ".properties";
-        InputStream propertiesFile = getClass().getResourceAsStream(filename);
-        Properties cfg = new Properties();
-        cfg.load(propertiesFile);
+        Properties cfg;
+        try {
+            InputStream propertiesFile = getClass().getResourceAsStream(filename);
+            cfg = new Properties();
+            cfg.load(propertiesFile);
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid environment file in cmd line");
+        }
 
 
         RestAssured.baseURI = cfg.getProperty("baseUrl");
