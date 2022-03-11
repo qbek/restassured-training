@@ -69,6 +69,6 @@ public class ProjectSteps {
                     .and()
                         .extract().body().jsonPath().getList(".", ProjectDetailsResponse.class);
 
-//        System.out.println(projects);
+        System.out.println(projects);
     }
 }

@@ -1,5 +1,7 @@
 package org.example;
 
+import com.github.javafaker.Faker;
+import io.cucumber.java.tr.Fakat;
 import net.thucydides.core.annotations.Steps;
 import org.example.steps.ProjectSteps;
 import org.junit.Test;
@@ -11,7 +13,13 @@ public class ProjectCreationTest extends BaseSetup {
 
     @Test
     public void user_can_create_a_new_project() {
-        String projectName = "Szkolenie";
+        String projectName;
+
+        if( System.getProperty("td", "").equals("random")) {
+            projectName = data.getProjectName();
+        } else {
+            projectName = staticData.getProjectName();
+        }
         long projectId = steps.userCreatesANewProject(projectName);
         steps.userChecksProjectDetails(projectId, projectName);
         steps.userChecksAllProjectsList(projectId, projectName);

@@ -3,6 +3,8 @@ package org.example;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import net.serenitybdd.junit.runners.SerenityRunner;
+import org.example.data.RandomDataGenerator;
+import org.example.data.StaticDataGenerator;
 import org.example.steps.ProjectSteps;
 import org.example.steps.TasksSteps;
 import org.junit.Before;
@@ -14,6 +16,9 @@ import java.util.Properties;
 
 @RunWith(SerenityRunner.class)
 public class BaseSetup {
+
+    protected RandomDataGenerator data = new RandomDataGenerator();
+    protected StaticDataGenerator staticData = new StaticDataGenerator();
 
     @Before
     public void setup() throws IOException {

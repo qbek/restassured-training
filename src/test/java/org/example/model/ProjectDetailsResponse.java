@@ -11,7 +11,7 @@ public class ProjectDetailsResponse {
     private boolean favorite;
     private int sync_id;
     private String url;
-    private boolean inbox_project;
+    private Boolean inbox_project;
 
     public boolean getInbox_project() {
         return inbox_project;
