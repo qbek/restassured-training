@@ -16,8 +16,8 @@ public class TaskCreationTest extends BaseSetup {
 
     @Test
     public void user_can_add_task_to_the_project() {
-        String taskName = data.getTaskName();
-        String projectName = data.getProjectName();
+        String taskName = data.getDataGenerator().getTaskName();
+        String projectName = data.getDataGenerator().getProjectName();
 
         long projectId = preconditions.userCreatesANewProject(projectName);
         long taskId = steps.userAddsTaskToTheProject(taskName, projectId);
