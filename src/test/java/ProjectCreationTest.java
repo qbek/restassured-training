@@ -14,8 +14,6 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class ProjectCreationTest {
 
-
-
     @BeforeAll
     public static void setup() {
         RequestSpecBuilder builder = new RequestSpecBuilder();
@@ -30,18 +28,24 @@ public class ProjectCreationTest {
     }
     @Test
     public void userCanCreateAProject() {
-        long projectId = RestAssured
+        String projectName = "Szkolenie RestAssured ze zmiennej";
+        long projectId = createNewProject(projectName);
+        checkIfProjectIsCreated(projectId, projectName);
+        checkIfProjectIsOnAllProjectList(projectId, projectName);
+    }
+
+    private void checkIfProjectIsOnAllProjectList(long projectId, String projectName) {
+        RestAssured
                 .given()
-                    .body("{\"name\": \"Szkolenie RestAssured\"}")
                 .when()
-                    .post("/projects")
+                    .get("/projects")
                 .then()
                     .assertThat()
                         .statusCode(200)
-                        .body("name", equalTo("Szkolenie RestAssured"))
-                    .and()
-                        .extract().path("id");
+                        .body(format("find{ it.id == %d }.name", projectId), equalTo(projectName));
+    }
 
+    private void checkIfProjectIsCreated(long projectId, String projectName) {
         RestAssured
                 .given()
                     .pathParam("id", projectId)
@@ -51,17 +55,25 @@ public class ProjectCreationTest {
                     .assertThat()
                         .statusCode(200)
                         .body("id", equalTo(projectId))
-                        .body("name", equalTo("Szkolenie RestAssured"));
+                        .body("name", equalTo(projectName));
+    }
 
-        RestAssured
+    private long createNewProject(String projectName) {
+        long projectId = RestAssured
                 .given()
+                    .body(format("{\"name\": \"%s\"}" , projectName))
                 .when()
-                    .get("/projects")
+                    .post("/projects")
                 .then()
                     .assertThat()
                         .statusCode(200)
-                        .body(format("find{ it.id == %d }.name", projectId), equalTo("Szkolenie RestAssured"));
-
+                        .body("name", equalTo(projectName))
+                    .and()
+                        .extract().path("id");
+        return projectId;
     }
-
 }
+
+
+
+
