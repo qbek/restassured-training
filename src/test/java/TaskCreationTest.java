@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class TaskCreationTest extends BaseTestClass {
 
+
     @Test
     public void userCanAddTaksToTheProject() {
         String projectName = "Projekt z zadaniem";
