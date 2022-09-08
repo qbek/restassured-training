@@ -10,6 +10,10 @@ public class ProjectSteps {
     private long id;
     private String name;
 
+    public long getId() {
+        return id;
+    }
+
     public void checkIfAddedToProjectList() {
         RestAssured
                 .given()
@@ -34,7 +38,7 @@ public class ProjectSteps {
                         .body("name", equalTo(name));
     }
 
-    public long create(String projectName) {
+    public void create(String projectName) {
         name = projectName;
         id = RestAssured
                 .given()
@@ -47,6 +51,5 @@ public class ProjectSteps {
                         .body("name", equalTo(name))
                     .and()
                         .extract().path("id");
-        return id;
     }
 }
