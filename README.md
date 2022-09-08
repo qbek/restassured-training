@@ -1,1 +1,1 @@
-Kod projektu ze szkolenia RestAssured
+Kod projektu ze szkolenia RestAssured dla T-Mobile
