@@ -1,10 +1,13 @@
+package org.example;
+
+import net.thucydides.core.annotations.Steps;
+import org.example.steps.ProjectSteps;
 import org.junit.jupiter.api.Test;
-import steps.ProjectSteps;
 
 
 public class ProjectCreationTest extends BaseTestClass {
 
-    ProjectSteps project = new ProjectSteps();
+    @Steps ProjectSteps project;
 
     @Test
     public void userCanCreateAProject() {

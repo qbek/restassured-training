@@ -1,5 +1,6 @@
+package org.example;
+
 import io.restassured.RestAssured;
-import lombok.Getter;
 import org.junit.jupiter.api.Test;
 
 public class HelloWorldTest {

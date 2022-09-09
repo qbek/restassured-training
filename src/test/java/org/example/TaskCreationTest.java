@@ -1,12 +1,17 @@
+package org.example;
+
+import net.thucydides.core.annotations.Steps;
 import org.junit.jupiter.api.Test;
-import steps.ProjectSteps;
-import steps.TaskSteps;
+import org.example.steps.ProjectSteps;
+import org.example.steps.TaskSteps;
 
 public class TaskCreationTest extends BaseTestClass {
 
-    ProjectSteps project = new ProjectSteps();
+    @Steps
+    ProjectSteps project;
 
-    TaskSteps task = new TaskSteps();
+    @Steps
+    TaskSteps task;
 
     @Test
     public void userCanAddTaskToTheProject() {
@@ -17,5 +22,4 @@ public class TaskCreationTest extends BaseTestClass {
         task.checkDetails();
         task.checkIfAddedToTasksList();
     }
-
 }
