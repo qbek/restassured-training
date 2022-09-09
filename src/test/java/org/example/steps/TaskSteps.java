@@ -2,6 +2,7 @@ package org.example.steps;
 
 import net.serenitybdd.rest.SerenityRest;
 import net.thucydides.core.annotations.Step;
+import org.example.model.CreateTaskRequest;
 
 import static java.lang.String.format;
 import static org.hamcrest.Matchers.equalTo;
@@ -39,20 +40,21 @@ public class TaskSteps {
     @Step("User adds task '{0}' to the project")
     public void addToProject(String taskName, long projectId) {
         name =  taskName;
+        CreateTaskRequest payload = new CreateTaskRequest(name);
+        payload.setProjectId(projectId);
+
         id = SerenityRest
                 .given()
-                .body(
-                        format("{ \"content\": \"%s\", \"project_id\": %d}", name, projectId)
-                )
+                    .body(payload)
                 .when()
-                .post("/tasks")
+                    .post("/tasks")
                 .then()
-                .assertThat()
-                .statusCode(200)
-                .body("content", equalTo(name))
-                .body("project_id", equalTo(projectId))
-                .and()
-                .extract().path("id");
+                    .assertThat()
+                        .statusCode(200)
+                        .body("content", equalTo(name))
+                        .body("project_id", equalTo(projectId))
+                    .and()
+                        .extract().path("id");
     }
 
 }

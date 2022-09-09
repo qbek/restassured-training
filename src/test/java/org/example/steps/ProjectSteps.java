@@ -1,7 +1,9 @@
 package org.example.steps;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import net.serenitybdd.rest.SerenityRest;
 import net.thucydides.core.annotations.Step;
+import org.example.model.CreateProjectRequest;
 
 import static java.lang.String.format;
 import static org.hamcrest.Matchers.equalTo;
@@ -43,11 +45,13 @@ public class ProjectSteps {
     }
 
     @Step("User creates a new project with name: {0} ")
-    public void create(String projectName) {
+    public void create(String projectName) throws JsonProcessingException {
         name = projectName;
+        CreateProjectRequest payload = new CreateProjectRequest(name);
+
         id = SerenityRest
                 .given()
-                    .body(format("{\"name\": \"%s\"}" , name))
+                    .body(payload)
                 .when()
                     .post("/projects")
                 .then()
