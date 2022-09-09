@@ -1,10 +1,17 @@
 package org.example.testdata;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TestDataGenerator {
 
-    IDataGenerator randomData = new RandomDataGenerator();
-    IDataGenerator staticData = new StaticDataGenerator();
+    List<IDataGenerator> generators;
 
+    public TestDataGenerator() {
+        generators = new ArrayList<>();
+        generators.add(new RandomDataGenerator());
+        generators.add(new StaticDataGenerator());
+    }
 
     public String getProjectName() {
         return getGenerator().generateProjectName();
@@ -16,12 +23,11 @@ public class TestDataGenerator {
 
     private IDataGenerator getGenerator() {
         String testDataType = System.getProperty("td");
-        if (testDataType.equals("random")) {
-            return randomData;
-        } else if (testDataType.equals("static")) {
-            return staticData;
+        for (IDataGenerator generator : generators) {
+            if (generator.getType().equals(testDataType)) {
+                return generator;
+            }
         }
-
         throw new RuntimeException("Missing td parameter in test execution");
     }
 }

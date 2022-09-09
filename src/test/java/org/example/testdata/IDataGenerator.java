@@ -5,4 +5,6 @@ public interface IDataGenerator {
     String generateProjectName();
 
     String generateTaskName();
+
+    String getType();
 }

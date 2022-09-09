@@ -6,13 +6,18 @@ public class RandomDataGenerator implements IDataGenerator {
 
     private Faker randomData = new Faker();
 
+    @Override
     public String generateProjectName() {
         return randomData.funnyName().name();
     }
 
+    @Override
     public String generateTaskName() {
         return randomData.backToTheFuture().quote();
     }
 
-    public void hello() {};
+    @Override
+    public String getType() {
+        return "random";
+    }
 }
