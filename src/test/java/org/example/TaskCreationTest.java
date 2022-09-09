@@ -14,12 +14,10 @@ public class TaskCreationTest extends BaseTestClass {
     @Steps
     TaskSteps task;
 
-
-
     @Test
     public void userCanAddTaskToTheProject() throws JsonProcessingException {
-        String projectName = "Projekt z zadaniem2";
-        String taskName = "to jest moje zadanie";
+        String projectName = dataGenerator.getProjectName();
+        String taskName = dataGenerator.getTaskName();
         project.create(projectName);
         task.addToProject(taskName, project.getId());
         task.checkDetails();

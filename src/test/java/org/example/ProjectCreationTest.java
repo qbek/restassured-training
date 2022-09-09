@@ -9,9 +9,10 @@ import org.junit.jupiter.api.Test;
 public class ProjectCreationTest extends BaseTestClass {
 
     @Steps ProjectSteps project;
+
     @Test
     public void userCanCreateAProject() throws JsonProcessingException {
-        String projectName = "Szkolenie RestAssured";
+        String projectName = dataGenerator.getProjectName();
         project.create(projectName);
         project.checkDetails();
         project.checkIfAddedToProjectList();
