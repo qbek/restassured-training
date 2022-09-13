@@ -1,61 +1,66 @@
 package org.example;
 
 import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.builder.ResponseSpecBuilder;
+import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class ProjectCreationTest {
 
+    @BeforeAll
+    public static void setup() {
+        RequestSpecBuilder reqBuilder = new RequestSpecBuilder();
+
+        RestAssured.requestSpecification = reqBuilder
+                .setBaseUri("https://api.todoist.com")
+                .setBasePath("/rest/v1")
+                .addHeader("Authorization", "Bearer d469ce54eca3a7ca5b6b5e7d4c8d51ced8d4c7b1")
+                .build();
+
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+    }
+
     @Test
     public void userCanCreateAProject() {
+        String projectName = "Szkolenie RestAssured";
         long projectId = RestAssured
                 .given()
-                    .baseUri("https://api.todoist.com")
-                    .basePath("/rest/v1")
-                    .header("Authorization", "Bearer d469ce54eca3a7ca5b6b5e7d4c8d51ced8d4c7b1")
                     .contentType(ContentType.JSON)
-                    .body("{ \"name\" : \"Szkolenie RestAsurred\"}")
-                    .log().all()
+                    .body(String.format("{ \"name\" : \"%s\"}", projectName))
                 .when()
                     .post("/projects")
                 .then()
-                    .log().all()
                     .assertThat()
                         .statusCode(200)
-                        .body("name", Matchers.equalTo("Szkolenie RestAsurred"))
+                        .body("name", Matchers.equalTo(projectName))
                     .and()
                         .extract().path("id");
 
         RestAssured
                 .given()
-                    .baseUri("https://api.todoist.com")
-                    .basePath("/rest/v1")
-                    .header("Authorization", "Bearer d469ce54eca3a7ca5b6b5e7d4c8d51ced8d4c7b1")
                     .pathParam("id", projectId)
-                    .log().all()
                 .when()
                     .get("/projects/{id}")
                 .then()
-                    .log().all()
                     .assertThat()
                         .statusCode(200)
                         .body("id", Matchers.equalTo(projectId))
-                        .body("name", Matchers.equalTo("Szkolenie RestAsurred"));
+                        .body("name", Matchers.equalTo(projectName));
 
         RestAssured
                 .given()
-                    .baseUri("https://api.todoist.com")
-                    .basePath("/rest/v1")
-                    .header("Authorization", "Bearer d469ce54eca3a7ca5b6b5e7d4c8d51ced8d4c7b1")
-                    .log().all()
                 .when()
                     .get("/projects")
                 .then()
-                .log().all()
                     .assertThat()
                         .statusCode(200)
-                        .body(String.format("find{ it.id == %d}.name", projectId), Matchers.equalTo("Szkolenie RestAsurred"));
+                        .body(String.format("find{ it.id == %d}.name", projectId), Matchers.equalTo(projectName));
 
     }
 }
