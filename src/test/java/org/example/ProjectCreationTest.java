@@ -28,8 +28,43 @@ public class ProjectCreationTest {
 
     @Test
     public void userCanCreateAProject() {
-        String projectName = "Szkolenie RestAssured";
-        long projectId = RestAssured
+        String projectName = "Szkolenie RestAssured po refaktorze";
+        long projectId = createNewProject(projectName);
+        checkProjectDetails(projectId, projectName);
+        checkIfProjectIsOnAllProjectsList(projectId, projectName);
+    }
+
+    @Test
+    public void userCanAddTaskToTheProject() {
+
+    }
+
+    private void checkIfProjectIsOnAllProjectsList(long projectId, String projectName) {
+        RestAssured
+                .given()
+                .when()
+                    .get("/projects")
+                .then()
+                    .assertThat()
+                        .statusCode(200)
+                        .body(String.format("find{ it.id == %d}.name", projectId), Matchers.equalTo(projectName));
+    }
+
+    private void checkProjectDetails(long projectId, String projectName) {
+        RestAssured
+                .given()
+                    .pathParam("id", projectId)
+                .when()
+                    .get("/projects/{id}")
+                .then()
+                    .assertThat()
+                        .statusCode(200)
+                        .body("id", Matchers.equalTo(projectId))
+                        .body("name", Matchers.equalTo(projectName));
+    }
+
+    private long createNewProject(String projectName) {
+        return RestAssured
                 .given()
                     .contentType(ContentType.JSON)
                     .body(String.format("{ \"name\" : \"%s\"}", projectName))
@@ -41,26 +76,5 @@ public class ProjectCreationTest {
                         .body("name", Matchers.equalTo(projectName))
                     .and()
                         .extract().path("id");
-
-        RestAssured
-                .given()
-                    .pathParam("id", projectId)
-                .when()
-                    .get("/projects/{id}")
-                .then()
-                    .assertThat()
-                        .statusCode(200)
-                        .body("id", Matchers.equalTo(projectId))
-                        .body("name", Matchers.equalTo(projectName));
-
-        RestAssured
-                .given()
-                .when()
-                    .get("/projects")
-                .then()
-                    .assertThat()
-                        .statusCode(200)
-                        .body(String.format("find{ it.id == %d}.name", projectId), Matchers.equalTo(projectName));
-
     }
 }
