@@ -4,24 +4,20 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.hamcrest.Matchers;
 
-public class ProjectSteps {
+public class TaskSteps {
 
     private long id;
     private String name;
 
-    public long getId() {
-        return id;
-    }
-
-    public void checkIsOnAllProjectsList() {
+    public void checkIsOnAllTasksList() {
         RestAssured
                 .given()
                 .when()
-                .get("/projects")
+                .get("/tasks")
                 .then()
                 .assertThat()
                 .statusCode(200)
-                .body(String.format("find{ it.id == %d}.name", this.id), Matchers.equalTo(this.name));
+                .body(String.format("find{ it.id == %d }.content", this.id), Matchers.equalTo(this.name));
     }
 
     public void checkDetails() {
@@ -29,26 +25,28 @@ public class ProjectSteps {
                 .given()
                 .pathParam("id", this.id)
                 .when()
-                .get("/projects/{id}")
+                .get("/tasks/{id}")
                 .then()
                 .assertThat()
                 .statusCode(200)
-                .body("id", Matchers.equalTo(this.id))
-                .body("name", Matchers.equalTo(this.name));
+                .body("content", Matchers.equalTo(this.name));
     }
 
-    public void create(String projectName) {
-        this.name = projectName;
+    public void addToTheProject(String taskName, long projectId) {
+        this.name = taskName;
         this.id = RestAssured
                 .given()
                 .contentType(ContentType.JSON)
-                .body(String.format("{ \"name\" : \"%s\"}", this.name))
+                .body(
+                        String.format("{ \"content\": \"%s\", \"project_id\": %d}", this.name, projectId)
+                )
                 .when()
-                .post("/projects")
+                .post("/tasks")
                 .then()
                 .assertThat()
                 .statusCode(200)
-                .body("name", Matchers.equalTo(this.name))
+                .body("content", Matchers.equalTo(this.name))
+                .body("project_id", Matchers.equalTo(projectId))
                 .and()
                 .extract().path("id");
     }

@@ -2,20 +2,14 @@ package org.example;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.builder.ResponseSpecBuilder;
-import io.restassured.filter.log.LogDetail;
-import io.restassured.http.ContentType;
-import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
 import org.example.steps.ProjectSteps;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 
 public class ProjectCreationTest {
 
-    ProjectSteps step = new ProjectSteps();
+    ProjectSteps project = new ProjectSteps();
 
     @BeforeAll
     public static void setup() {
@@ -33,9 +27,8 @@ public class ProjectCreationTest {
     @Test
     public void userCanCreateAProject() {
         String projectName = "Szkolenie RestAssured po refaktorze";
-        step.createNewProject(projectName);
-        step.checkProjectDetails();
-        step.checkIfProjectIsOnAllProjectsList();
+        project.create(projectName);
+        project.checkDetails();
+        project.checkIsOnAllProjectsList();
     }
-
 }

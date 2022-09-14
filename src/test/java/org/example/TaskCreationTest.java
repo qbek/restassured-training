@@ -2,15 +2,15 @@ package org.example;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.http.ContentType;
 import org.example.steps.ProjectSteps;
-import org.hamcrest.Matchers;
+import org.example.steps.TaskSteps;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 public class TaskCreationTest {
 
-    ProjectSteps precondition = new ProjectSteps();
+    ProjectSteps project = new ProjectSteps();
+    TaskSteps task = new TaskSteps();
 
     @BeforeAll
     public static void setup() {
@@ -30,51 +30,10 @@ public class TaskCreationTest {
         String projectName = "Projekt z zadaniem";
         String taskName = "to jest moje zadanie";
 
-        precondition.createNewProject(projectName);
-        long taskId = addTaskToTheProject(taskName, precondition.getCreatedProjectId());
-        checkIfTaskIsCreated(taskId, taskName);
-        checkIfTaskIsOnAllTasksList(taskId, taskName);
+        project.create(projectName);
+        task.addToTheProject(taskName, project.getId());
+        task.checkDetails();
+        task.checkIsOnAllTasksList();
     }
 
-
-    private void checkIfTaskIsOnAllTasksList(long taskId, String taskName) {
-        RestAssured
-                .given()
-                .when()
-                .get("/tasks")
-                .then()
-                .assertThat()
-                .statusCode(200)
-                .body(String.format("find{ it.id == %d }.content", taskId), Matchers.equalTo(taskName));
-    }
-
-    private void checkIfTaskIsCreated(long taskId, String taskName) {
-        RestAssured
-                .given()
-                .pathParam("id", taskId)
-                .when()
-                .get("/tasks/{id}")
-                .then()
-                .assertThat()
-                .statusCode(200)
-                .body("content", Matchers.equalTo(taskName));
-    }
-
-    private long addTaskToTheProject(String taskName, long projectId) {
-        return RestAssured
-                .given()
-                .contentType(ContentType.JSON)
-                .body(
-                        String.format("{ \"content\": \"%s\", \"project_id\": %d}", taskName, projectId)
-                )
-                .when()
-                .post("/tasks")
-                .then()
-                .assertThat()
-                .statusCode(200)
-                .body("content", Matchers.equalTo(taskName))
-                .body("project_id", Matchers.equalTo(projectId))
-                .and()
-                .extract().path("id");
-    }
 }
