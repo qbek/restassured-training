@@ -6,7 +6,14 @@ import org.hamcrest.Matchers;
 
 public class ProjectSteps {
 
-    public void checkIfProjectIsOnAllProjectsList(long projectId, String projectName) {
+    private long id;
+    private String name;
+
+    public long getCreatedProjectId() {
+        return id;
+    }
+
+    public void checkIfProjectIsOnAllProjectsList() {
         RestAssured
                 .given()
                 .when()
@@ -14,33 +21,34 @@ public class ProjectSteps {
                 .then()
                 .assertThat()
                 .statusCode(200)
-                .body(String.format("find{ it.id == %d}.name", projectId), Matchers.equalTo(projectName));
+                .body(String.format("find{ it.id == %d}.name", this.id), Matchers.equalTo(this.name));
     }
 
-    public void checkProjectDetails(long projectId, String projectName) {
+    public void checkProjectDetails() {
         RestAssured
                 .given()
-                .pathParam("id", projectId)
+                .pathParam("id", this.id)
                 .when()
                 .get("/projects/{id}")
                 .then()
                 .assertThat()
                 .statusCode(200)
-                .body("id", Matchers.equalTo(projectId))
-                .body("name", Matchers.equalTo(projectName));
+                .body("id", Matchers.equalTo(this.id))
+                .body("name", Matchers.equalTo(this.name));
     }
 
-    public long createNewProject(String projectName) {
-        return RestAssured
+    public void createNewProject(String projectName) {
+        this.name = projectName;
+        this.id = RestAssured
                 .given()
                 .contentType(ContentType.JSON)
-                .body(String.format("{ \"name\" : \"%s\"}", projectName))
+                .body(String.format("{ \"name\" : \"%s\"}", this.name))
                 .when()
                 .post("/projects")
                 .then()
                 .assertThat()
                 .statusCode(200)
-                .body("name", Matchers.equalTo(projectName))
+                .body("name", Matchers.equalTo(this.name))
                 .and()
                 .extract().path("id");
     }

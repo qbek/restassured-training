@@ -30,14 +30,12 @@ public class ProjectCreationTest {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
-
     @Test
     public void userCanCreateAProject() {
         String projectName = "Szkolenie RestAssured po refaktorze";
-
-        long projectId = step.createNewProject(projectName);
-        step.checkProjectDetails(projectId, projectName);
-        step.checkIfProjectIsOnAllProjectsList(projectId, projectName);
+        step.createNewProject(projectName);
+        step.checkProjectDetails();
+        step.checkIfProjectIsOnAllProjectsList();
     }
 
 }

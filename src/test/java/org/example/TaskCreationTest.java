@@ -30,8 +30,8 @@ public class TaskCreationTest {
         String projectName = "Projekt z zadaniem";
         String taskName = "to jest moje zadanie";
 
-        long projectId = precondition.createNewProject(projectName);
-        long taskId = addTaskToTheProject(taskName, projectId);
+        precondition.createNewProject(projectName);
+        long taskId = addTaskToTheProject(taskName, precondition.getCreatedProjectId());
         checkIfTaskIsCreated(taskId, taskName);
         checkIfTaskIsOnAllTasksList(taskId, taskName);
     }
