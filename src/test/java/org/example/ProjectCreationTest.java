@@ -7,12 +7,15 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.example.steps.ProjectSteps;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 
 public class ProjectCreationTest {
+
+    ProjectSteps step = new ProjectSteps();
 
     @BeforeAll
     public static void setup() {
@@ -32,101 +35,9 @@ public class ProjectCreationTest {
     public void userCanCreateAProject() {
         String projectName = "Szkolenie RestAssured po refaktorze";
 
-        long projectId = createNewProject(projectName);
-        checkProjectDetails(projectId, projectName);
-        checkIfProjectIsOnAllProjectsList(projectId, projectName);
+        long projectId = step.createNewProject(projectName);
+        step.checkProjectDetails(projectId, projectName);
+        step.checkIfProjectIsOnAllProjectsList(projectId, projectName);
     }
 
-    @Test
-    public void userCanAddTaskToTheProject() {
-        String projectName = "Projekt z zadaniem";
-        String taskName = "to jest moje zadanie";
-
-        long projectId = createNewProject(projectName);
-        long taskId = addTaskToTheProject(taskName, projectId);
-        checkIfTaskIsCreated(taskId, taskName);
-        checkIfTaskIsOnAllTasksList(taskId, taskName);
-    }
-
-
-    private void checkIfTaskIsOnAllTasksList(long taskId, String taskName) {
-        RestAssured
-                .given()
-                .when()
-                .get("/tasks")
-                .then()
-                .assertThat()
-                .statusCode(200)
-                .body(String.format("find{ it.id == %d }.content", taskId), Matchers.equalTo(taskName));
-    }
-
-    private void checkIfTaskIsCreated(long taskId, String taskName) {
-        RestAssured
-                .given()
-                .pathParam("id", taskId)
-                .when()
-                .get("/tasks/{id}")
-                .then()
-                .assertThat()
-                .statusCode(200)
-                .body("content", Matchers.equalTo(taskName));
-    }
-
-    private long addTaskToTheProject(String taskName, long projectId) {
-        return RestAssured
-                .given()
-                    .contentType(ContentType.JSON)
-                .body(
-                        String.format("{ \"content\": \"%s\", \"project_id\": %d}", taskName, projectId)
-                )
-                .when()
-                .post("/tasks")
-                .then()
-                .assertThat()
-                .statusCode(200)
-                .body("content", Matchers.equalTo(taskName))
-                .body("project_id", Matchers.equalTo(projectId))
-                .and()
-                .extract().path("id");
-    }
-
-
-    private void checkIfProjectIsOnAllProjectsList(long projectId, String projectName) {
-        RestAssured
-                .given()
-                .when()
-                    .get("/projects")
-                .then()
-                    .assertThat()
-                        .statusCode(200)
-                        .body(String.format("find{ it.id == %d}.name", projectId), Matchers.equalTo(projectName));
-    }
-
-    private void checkProjectDetails(long projectId, String projectName) {
-        RestAssured
-                .given()
-                    .pathParam("id", projectId)
-                .when()
-                    .get("/projects/{id}")
-                .then()
-                    .assertThat()
-                        .statusCode(200)
-                        .body("id", Matchers.equalTo(projectId))
-                        .body("name", Matchers.equalTo(projectName));
-    }
-
-    private long createNewProject(String projectName) {
-        return RestAssured
-                .given()
-                    .contentType(ContentType.JSON)
-                    .body(String.format("{ \"name\" : \"%s\"}", projectName))
-                .when()
-                    .post("/projects")
-                .then()
-                    .assertThat()
-                        .statusCode(200)
-                        .body("name", Matchers.equalTo(projectName))
-                    .and()
-                        .extract().path("id");
-    }
 }
