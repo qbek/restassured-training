@@ -1,5 +1,6 @@
 package org.example;
 
+import net.thucydides.core.annotations.Steps;
 import org.example.steps.ProjectSteps;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -7,7 +8,8 @@ import org.junit.jupiter.api.Test;
 
 public class ProjectCreationTest extends BaseSetup {
 
-    ProjectSteps project = new ProjectSteps();
+    @Steps
+    ProjectSteps project;
 
     @Test
     public void userCanCreateAProject() {

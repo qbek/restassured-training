@@ -1,14 +1,18 @@
 package org.example;
 
+import net.thucydides.core.annotations.Steps;
 import org.example.steps.ProjectSteps;
 import org.example.steps.TaskSteps;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class TaskCreationTest extends BaseSetup{
+public class TaskCreationTest extends BaseSetup {
 
-    ProjectSteps project = new ProjectSteps();
-    TaskSteps task = new TaskSteps();
+    @Steps
+    ProjectSteps project;
+
+    @Steps
+    TaskSteps task;
 
     @Test
     public void userCanAddTaskToTheProject() {
