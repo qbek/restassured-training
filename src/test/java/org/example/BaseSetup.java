@@ -1,5 +1,6 @@
 package org.example;
 
+import com.github.javafaker.Faker;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import net.serenitybdd.junit5.SerenityJUnit5Extension;
@@ -12,6 +13,8 @@ import java.util.Properties;
 
 @ExtendWith(SerenityJUnit5Extension.class)
 public abstract class BaseSetup {
+
+    protected Faker generator = new Faker();
 
     @BeforeAll
     public static void setup() throws IOException {

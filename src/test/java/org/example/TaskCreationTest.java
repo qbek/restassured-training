@@ -1,5 +1,6 @@
 package org.example;
 
+import com.github.javafaker.Faker;
 import net.thucydides.core.annotations.Steps;
 import org.example.steps.ProjectSteps;
 import org.example.steps.TaskSteps;
@@ -14,10 +15,12 @@ public class TaskCreationTest extends BaseSetup {
     @Steps
     TaskSteps task;
 
+    Faker generator = new Faker();
+
     @Test
     public void userCanAddTaskToTheProject() {
-        String projectName = "Projekt z zadaniem";
-        String taskName = "to jest moje zadanie";
+        String projectName = generator.zelda().game();
+        String taskName = generator.backToTheFuture().quote();
 
         project.create(projectName);
         task.addToTheProject(taskName, project.getId());

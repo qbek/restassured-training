@@ -1,10 +1,12 @@
 package org.example.steps;
 
-import io.restassured.RestAssured;
+
 import io.restassured.http.ContentType;
 import net.serenitybdd.rest.SerenityRest;
 import net.thucydides.core.annotations.Step;
+import org.example.model.TaskRequest;
 import org.hamcrest.Matchers;
+
 
 public class TaskSteps {
 
@@ -38,13 +40,14 @@ public class TaskSteps {
 
     @Step("User add task '{0}' to project with id: {1}")
     public void addToTheProject(String taskName, long projectId) {
+        TaskRequest payload = new TaskRequest(taskName);
+        payload.setProject_id(projectId);
+
         this.name = taskName;
         this.id = SerenityRest
                 .given()
                 .contentType(ContentType.JSON)
-                .body(
-                        String.format("{ \"content\": \"%s\", \"project_id\": %d}", this.name, projectId)
-                )
+                .body(payload)
                 .when()
                 .post("/tasks")
                 .then()

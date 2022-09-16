@@ -1,5 +1,6 @@
 package org.example;
 
+import com.github.javafaker.Faker;
 import net.thucydides.core.annotations.Steps;
 import org.example.steps.ProjectSteps;
 import org.junit.jupiter.api.BeforeAll;
@@ -13,7 +14,7 @@ public class ProjectCreationTest extends BaseSetup {
 
     @Test
     public void userCanCreateAProject() {
-        String projectName = "Szkolenie RestAssured po refaktorze";
+        String projectName = generator.chuckNorris().fact();
         project.create(projectName);
         project.checkDetails();
         project.checkIsOnAllProjectsList();
