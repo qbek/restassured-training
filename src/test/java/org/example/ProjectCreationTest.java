@@ -1,9 +1,7 @@
 package org.example;
 
-import com.github.javafaker.Faker;
 import net.thucydides.core.annotations.Steps;
 import org.example.steps.ProjectSteps;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 
@@ -14,7 +12,7 @@ public class ProjectCreationTest extends BaseSetup {
 
     @Test
     public void userCanCreateAProject() {
-        String projectName = generator.chuckNorris().fact();
+        String projectName = testData.getProjectName();
         project.create(projectName);
         project.checkDetails();
         project.checkIsOnAllProjectsList();
