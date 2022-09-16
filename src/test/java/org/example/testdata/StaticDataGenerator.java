@@ -1,6 +1,6 @@
 package org.example.testdata;
 
-public class StaticDataGenerator {
+public class StaticDataGenerator implements IDataGenerator {
 
     public String getProjectName() {
         return "Statyczna nazwa projektu";
@@ -8,5 +8,10 @@ public class StaticDataGenerator {
 
     public String getTaskName() {
         return "Statyczna nazwa taska";
+    }
+
+    @Override
+    public String getGeneratorType() {
+        return "static";
     }
 }

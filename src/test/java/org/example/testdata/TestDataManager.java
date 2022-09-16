@@ -1,31 +1,35 @@
 package org.example.testdata;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TestDataManager {
 
-    RandomDataGenerator randomData = new RandomDataGenerator();
-    StaticDataGenerator staticData = new StaticDataGenerator();
+    List<IDataGenerator> generators;
+
+    String dataType = System.getProperty("td");
+
+    public TestDataManager() {
+        generators = new ArrayList<>();
+        generators.add(new RandomDataGenerator());
+        generators.add(new StaticDataGenerator());
+    }
+
 
     public String getProjectName() {
-        String dataType = System.getProperty("td");
-
-        if (dataType.equals("random")) {
-            return randomData.getProjectName();
-        } else if (dataType.equals("static")) {
-            return staticData.getProjectName();
-        }
-
-        throw new RuntimeException("Invalid td parameter");
+      return selectGenerator().getProjectName();
     }
 
     public String getTaskName() {
-        String dataType = System.getProperty("td");
+        return selectGenerator().getTaskName();
+    }
 
-        if (dataType.equals("random")) {
-            return randomData.getTaskName();
-        } else if (dataType.equals("static")) {
-            return staticData.getTaskName();
+    private IDataGenerator selectGenerator() {
+        for (IDataGenerator generator : generators) {
+            if (generator.getGeneratorType().equals(dataType)) {
+                return generator;
+            }
         }
-
         throw new RuntimeException("Invalid td parameter");
     }
 }
