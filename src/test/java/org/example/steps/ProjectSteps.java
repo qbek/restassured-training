@@ -1,7 +1,8 @@
 package org.example.steps;
 
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import net.serenitybdd.rest.SerenityRest;
+import net.thucydides.core.annotations.Step;
 import org.hamcrest.Matchers;
 
 public class ProjectSteps {
@@ -13,8 +14,9 @@ public class ProjectSteps {
         return id;
     }
 
+    @Step
     public void userChecksIfProjectWasAddedToAllProjectList() {
-        RestAssured
+        SerenityRest
                 .given()
                 .when()
                 .get("/projects")
@@ -27,8 +29,9 @@ public class ProjectSteps {
                 );
     }
 
+    @Step
     public void userCheckProjectDetails() {
-        RestAssured
+        SerenityRest
                 .given()
                 .pathParam("id", id)
                 .when()
@@ -40,9 +43,10 @@ public class ProjectSteps {
                 .body("name", Matchers.equalTo(name));
     }
 
+    @Step
     public void userCreatesANewProject(String projectName) {
-        name = projectName;
-        id =  RestAssured
+        this.name = projectName;
+        this.id =  SerenityRest
                 .given()
                 .contentType(ContentType.JSON)
                 .body(String.format("{\"name\": \"%s\"}", name))

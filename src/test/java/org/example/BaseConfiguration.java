@@ -2,8 +2,11 @@ package org.example;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
+import net.serenitybdd.junit5.SerenityJUnit5Extension;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(SerenityJUnit5Extension.class)
 public abstract class BaseConfiguration {
 
     @BeforeAll
