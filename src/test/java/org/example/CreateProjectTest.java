@@ -6,15 +6,15 @@ import org.junit.jupiter.api.Test;
 
 public class CreateProjectTest extends BaseConfiguration {
 
-    @Steps
-    ProjectSteps step;
+    @Steps(actor = "Stefan")
+    ProjectSteps project;
 
     @Test
     public void userCanCreateANewProject() {
         var projectName = "Szkolenie RestAPI";
-        step.userCreatesANewProject(projectName);
-        step.userCheckProjectDetails();
-        step.userChecksIfProjectWasAddedToAllProjectList();
+        project.create(projectName);
+        project.checkDetails();
+        project.checkIfAddedToProjectsList();
     }
 
 }

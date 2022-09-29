@@ -1,11 +1,14 @@
 package org.example.steps;
 
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import net.serenitybdd.rest.SerenityRest;
 import net.thucydides.core.annotations.Step;
 import org.hamcrest.Matchers;
 
 public class ProjectSteps {
+
+    private String actor;
 
     private long id;
     private String name;
@@ -14,8 +17,8 @@ public class ProjectSteps {
         return id;
     }
 
-    @Step
-    public void userChecksIfProjectWasAddedToAllProjectList() {
+    @Step("#actor checks if project was added to projects list")
+    public void checkIfAddedToProjectsList() {
         SerenityRest
                 .given()
                 .when()
@@ -29,8 +32,8 @@ public class ProjectSteps {
                 );
     }
 
-    @Step
-    public void userCheckProjectDetails() {
+    @Step("#actor check project details")
+    public void checkDetails() {
         SerenityRest
                 .given()
                 .pathParam("id", id)
@@ -43,19 +46,29 @@ public class ProjectSteps {
                 .body("name", Matchers.equalTo(name));
     }
 
-    @Step
-    public void userCreatesANewProject(String projectName) {
+    @Step("#actor creates a new project")
+    public void create(String projectName) {
         this.name = projectName;
-        this.id =  SerenityRest
+        Response createProjectResponse = sendPostRequest();
+        verifyPostRequest(createProjectResponse);
+        this.id = createProjectResponse.then().extract().path("id");
+    }
+
+    @Step("send post request with: #name")
+    public Response sendPostRequest() {
+        return SerenityRest
                 .given()
                 .contentType(ContentType.JSON)
                 .body(String.format("{\"name\": \"%s\"}", name))
                 .when()
-                .post("/projects")
-                .then()
+                .post("/projects");
+    }
+
+    @Step("verify create project response: #name, #id")
+    public void verifyPostRequest(Response response) {
+        response.then()
                 .assertThat()
                 .statusCode(200)
-                .body("name", Matchers.equalTo(name))
-                .and().extract().path("id");
+                .body("name", Matchers.equalTo(name));
     }
 }
