@@ -1,27 +1,35 @@
 package org.example.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TestDataProvider {
 
     private String dataType = System.getProperty("td");
 
-    private RandomDataGenerator random = new RandomDataGenerator();
-    private StaticDataGenerator stat = new StaticDataGenerator();
+    private List<IDataGenerator> generators = new ArrayList<>();
+
+    public TestDataProvider() {
+        generators.add(new RandomDataGenerator());
+        generators.add(new StaticDataGenerator());
+    }
+
 
     public String getProjectName() {
-        if (dataType.equals("random")) {
-            return random.getProjectName();
-        } else if (dataType.equals("static")) {
-            return stat.getProjectName();
-        }
-        throw new RuntimeException("You need to declare test data type");
+        return getGenerator().getProjectName();
     }
 
     public String getTaskName() {
-        if (dataType.equals("random")) {
-            return random.getTaskName();
-        } else if (dataType.equals("static")) {
-            return stat.getTaskName();
+        return getGenerator().getTaskName();
+    }
+
+    private IDataGenerator getGenerator() {
+        for (IDataGenerator generator : generators) {
+            if (dataType.equals(generator.getGeneratorType())) {
+                return generator;
+            }
         }
         throw new RuntimeException("You need to declare test data type");
     }
+
 }

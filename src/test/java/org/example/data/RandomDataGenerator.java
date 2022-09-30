@@ -2,7 +2,7 @@ package org.example.data;
 
 import com.github.javafaker.Faker;
 
-public class RandomDataGenerator {
+public class RandomDataGenerator implements IDataGenerator {
 
     private static Faker generator = new Faker();
 
@@ -12,5 +12,10 @@ public class RandomDataGenerator {
 
     public String getTaskName() {
         return generator.chuckNorris().fact();
+    }
+
+    @Override
+    public String getGeneratorType() {
+        return "random";
     }
 }
