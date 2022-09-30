@@ -15,10 +15,8 @@ public class TaskCreateTest extends BaseConfiguration {
 
     @Test
     public void userCanAddTaskToTheProject() {
-        var projectName = "Projekt na zadnie";
-        var taskName = "To jest moje zadanie";
-        project.create(projectName);
-        task.userAddsNewTaskToTheProject(taskName, project.getId());
+        project.create(generator.getProjectName());
+        task.userAddsNewTaskToTheProject(generator.getTaskName(), project.getId());
         task.userChecksTaskDetails();
         task.userChecksIfTaskWasAddedToAllTasksList();
     }

@@ -11,8 +11,7 @@ public class CreateProjectTest extends BaseConfiguration {
 
     @Test
     public void userCanCreateANewProject() {
-        var projectName = "Szkolenie RestAPI";
-        project.create(projectName);
+        project.create(generator.getProjectName());
         project.checkDetails();
         project.checkIfAddedToProjectsList();
     }

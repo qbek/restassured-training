@@ -3,6 +3,7 @@ package org.example.steps;
 import io.restassured.http.ContentType;
 import net.serenitybdd.rest.SerenityRest;
 import net.thucydides.core.annotations.Step;
+import org.example.model.TaskCreationPayload;
 import org.hamcrest.Matchers;
 
 public class TaskSteps {
@@ -47,12 +48,12 @@ public class TaskSteps {
         this.name = taskName;
         this.projectId = projectId;
 
+        var payload = new TaskCreationPayload(this.name);
+//        payload.setProject_id(this.projectId);
         this.id = SerenityRest
                 .given()
                 .contentType(ContentType.JSON)
-                .body(
-                        String.format("{\"content\": \"%s\", \"project_id\": %d}", name, this.projectId)
-                )
+                .body(payload)
                 .when()
                 .post("/tasks")
                 .then()
