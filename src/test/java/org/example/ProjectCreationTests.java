@@ -32,32 +32,13 @@ public class ProjectCreationTests {
 
     @Test
     public void userCanCreateANewProject() {
-        var projectId = RestAssured
-                .given()
-                    .contentType(ContentType.JSON)
-                    .body("{\"name\": \"Szkolenie Rest API\"}")
-                .when()
-                    .post("/projects")
-                .then()
-                    .assertThat()
-                        .statusCode(200)
-                        .body("name", Matchers.equalTo("Szkolenie Rest API 222"))
-                        .header("Content-Type", Matchers.equalTo("application/json"))
-                    .and()
-                        .extract().path("id");
+        var projectName = "Lepsze szkolenie RestAssured";
+        var projectId = userCreatesANewProject(projectName);
+        userChecksProjectDetails(projectId, projectName);
+        userChecksAllProjectsList(projectId, projectName);
+    }
 
-        RestAssured
-                .given()
-                    .pathParam("id", projectId)
-                .when()
-                    .get("/projects/{id}")
-                .then()
-                    .assertThat()
-                        .statusCode(200)
-                        .body("name", Matchers.equalTo("Szkolenie Rest API"))
-                        .body("id", Matchers.equalTo(projectId));
-
-
+    private void userChecksAllProjectsList(String projectId, String projectName) {
         RestAssured
                 .given()
                 .when()
@@ -67,9 +48,39 @@ public class ProjectCreationTests {
                         .statusCode(200)
                         .body(
                                 format("find{ it.id == \"%s\" }.name", projectId),
-                                Matchers.equalTo("Szkolenie Rest API")
+                                Matchers.equalTo(projectName)
                         );
+    }
 
+    private void userChecksProjectDetails(String projectId, String projectName) {
+        RestAssured
+                .given()
+                    .pathParam("id", projectId)
+                .when()
+                    .get("/projects/{id}")
+                .then()
+                    .assertThat()
+                        .statusCode(200)
+                        .body("name", Matchers.equalTo(projectName))
+                        .body("id", Matchers.equalTo(projectId));
+    }
+
+    private String userCreatesANewProject(String projectName) {
+        String projectId = RestAssured
+                    .given()
+                        .contentType(ContentType.JSON)
+                        .body(String.format("{\"name\": \"%s\"}", projectName))
+        //                    .body( "{\"name\": \"" + projectName + "\"}")`
+                    .when()
+                        .post("/projects")
+                    .then()
+                        .assertThat()
+                        .statusCode(200)
+                        .body("name", Matchers.equalTo(projectName))
+                        .header("Content-Type", Matchers.equalTo("application/json"))
+                    .and()
+                        .extract().path("id");
+        return projectId;
     }
 
 }
