@@ -6,16 +6,27 @@ import net.serenitybdd.junit5.SerenityJUnit5Extension;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.io.IOException;
+import java.util.Properties;
+
 @ExtendWith(SerenityJUnit5Extension.class)
 public class BaseSetup {
 
     @BeforeAll
-    public static void setup() {
+    public static void setup() throws IOException {
+        var filename = System.getProperty("env") + "_env.properties";
+
         var builder = new RequestSpecBuilder();
+        var file = builder.getClass().getResourceAsStream("/" + filename);
+
+        var configuration = new Properties();
+        configuration.load(file);
+
+//        var builder = new RequestSpecBuilder();
         var reqSpec = builder
-                .setBaseUri("https://api.todoist.com")
-                .setBasePath("/rest/v2")
-                .addHeader("Authorization", "Bearer d469ce54eca3a7ca5b6b5e7d4c8d51ced8d4c7b1")
+                .setBaseUri(configuration.getProperty("todoist_url"))
+                .setBasePath(configuration.getProperty("todoist_basePath"))
+                .addHeader("Authorization", "Bearer " + configuration.getProperty("todoist_token"))
 //                .log(LogDetail.ALL)
                 .build();
         RestAssured.requestSpecification = reqSpec;
