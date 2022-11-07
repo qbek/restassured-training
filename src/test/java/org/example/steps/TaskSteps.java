@@ -2,12 +2,14 @@ package org.example.steps;
 
 import io.restassured.http.ContentType;
 import net.serenitybdd.rest.SerenityRest;
+import net.thucydides.core.annotations.Step;
 import org.hamcrest.Matchers;
 
 import static java.lang.String.format;
 
 public class TaskSteps {
 
+    @Step
     public String addTaskToTheProject(String taskName, String projectId) {
         return SerenityRest
                 .given()
@@ -26,6 +28,7 @@ public class TaskSteps {
                 .extract().path("id");
     }
 
+    @Step
     public void checkIfTaskIsOnAllTasksList(String taskId, String taskName) {
         SerenityRest
                 .given()
@@ -37,6 +40,7 @@ public class TaskSteps {
                 .body(format("find{ it.id == \"%s\" }.content", taskId), Matchers.equalTo(taskName));
     }
 
+    @Step
     public void checkIfTaskIsCreated(String taskId, String taskName) {
         SerenityRest
                 .given()
