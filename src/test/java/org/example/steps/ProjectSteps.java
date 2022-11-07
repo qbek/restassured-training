@@ -1,7 +1,7 @@
 package org.example.steps;
 
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import net.serenitybdd.rest.SerenityRest;
 import org.hamcrest.Matchers;
 
 import static java.lang.String.format;
@@ -9,7 +9,7 @@ import static java.lang.String.format;
 public class ProjectSteps {
 
     public void userChecksAllProjectsList(String projectId, String projectName) {
-        RestAssured
+        SerenityRest
                 .given()
                 .when()
                 .get("/projects")
@@ -23,7 +23,7 @@ public class ProjectSteps {
     }
 
     public void userChecksProjectDetails(String projectId, String projectName) {
-        RestAssured
+        SerenityRest
                 .given()
                 .pathParam("id", projectId)
                 .when()
@@ -36,7 +36,7 @@ public class ProjectSteps {
     }
 
     public String userCreatesANewProject(String projectName) {
-        String projectId = RestAssured
+        String projectId = SerenityRest
                 .given()
                 .contentType(ContentType.JSON)
                 .body(String.format("{\"name\": \"%s\"}", projectName))

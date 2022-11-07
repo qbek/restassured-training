@@ -1,7 +1,7 @@
 package org.example.steps;
 
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import net.serenitybdd.rest.SerenityRest;
 import org.hamcrest.Matchers;
 
 import static java.lang.String.format;
@@ -9,7 +9,7 @@ import static java.lang.String.format;
 public class TaskSteps {
 
     public String addTaskToTheProject(String taskName, String projectId) {
-        return RestAssured
+        return SerenityRest
                 .given()
                 .body(
                         format("{ \"content\": \"%s\", \"project_id\": \"%s\"}", taskName, projectId)
@@ -27,7 +27,7 @@ public class TaskSteps {
     }
 
     public void checkIfTaskIsOnAllTasksList(String taskId, String taskName) {
-        RestAssured
+        SerenityRest
                 .given()
                 .when()
                 .get("/tasks")
@@ -38,7 +38,7 @@ public class TaskSteps {
     }
 
     public void checkIfTaskIsCreated(String taskId, String taskName) {
-        RestAssured
+        SerenityRest
                 .given()
                 .pathParam("id", taskId)
                 .when()

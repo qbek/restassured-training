@@ -1,15 +1,8 @@
 package org.example;
 
-import io.restassured.RestAssured;
-import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.http.ContentType;
 import org.example.steps.ProjectSteps;
 import org.example.steps.TaskSteps;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-
-import static java.lang.String.format;
 
 public class TaskCreationTests extends BaseSetup {
 
@@ -27,6 +20,4 @@ public class TaskCreationTests extends BaseSetup {
         steps.checkIfTaskIsCreated(taskId, taskName);
         steps.checkIfTaskIsOnAllTasksList(taskId, taskName);
     }
-
-
 }
