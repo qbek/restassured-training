@@ -1,6 +1,7 @@
 package org.example.steps;
 
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import net.serenitybdd.rest.SerenityRest;
 import net.thucydides.core.annotations.Step;
 import org.hamcrest.Matchers;
@@ -9,13 +10,15 @@ import static java.lang.String.format;
 
 public class ProjectSteps {
 
-    @Step
+    @Step("User checks all projects list")
     public void userChecksAllProjectsList(String projectId, String projectName) {
-        SerenityRest
-                .given()
-                .when()
-                .get("/projects")
-                .then()
+        var response = sendGetAllProjectsRequest();
+        verifyGetAllProjectsResponse(response, projectId, projectName);
+    }
+
+    @Step("Verify project list. Project exitst on the list: id '{1}', name '{2}'")
+    public void verifyGetAllProjectsResponse(Response response, String projectId, String projectName) {
+        response.then()
                 .assertThat()
                 .statusCode(200)
                 .body(
@@ -24,14 +27,23 @@ public class ProjectSteps {
                 );
     }
 
-    @Step("User checks project with id: {0} if has name: {1}")
-    public void userChecksProjectDetails(String projectId, String projectName) {
-        SerenityRest
+    @Step
+    public Response sendGetAllProjectsRequest() {
+        return SerenityRest
                 .given()
-                .pathParam("id", projectId)
                 .when()
-                .get("/projects/{id}")
-                .then()
+                .get("/projects");
+    }
+
+    @Step("User checks project details")
+    public void userChecksProjectDetails(String projectId, String projectName) {
+        var response = sendGetProjectDetailsRequest(projectId);
+        verifyProjectDetailsResponse(response, projectId, projectName);
+    }
+
+    @Step("Verify project details: expected id '{1}', expected name '{2}'")
+    public void verifyProjectDetailsResponse(Response response, String projectId, String projectName) {
+        response.then()
                 .assertThat()
                 .statusCode(200)
                 .body("name", Matchers.equalTo(projectName))
@@ -39,21 +51,39 @@ public class ProjectSteps {
     }
 
     @Step
+    public Response sendGetProjectDetailsRequest(String projectId) {
+        return SerenityRest
+                .given()
+                .pathParam("id", projectId)
+                .when()
+                .get("/projects/{id}");
+    }
+
+    @Step("User creates a new project")
     public String userCreatesANewProject(String projectName) {
-        String projectId = SerenityRest
+        var response = sendCreateNewProjectRequest(projectName);
+        var projectId = verifyProjectCreateResponse(response, projectName);
+        return projectId;
+    }
+
+    @Step("Verification of create project response. Expect name: {1}")
+    public String verifyProjectCreateResponse(Response response, String projectName) {
+        return response.then()
+                .assertThat()
+                    .statusCode(200)
+                    .body("name", Matchers.equalTo(projectName))
+                    .header("Content-Type", Matchers.equalTo("application/json"))
+                .and()
+                .extract().path("id");
+    }
+
+    @Step
+    public Response sendCreateNewProjectRequest(String projectName) {
+        return SerenityRest
                 .given()
                 .contentType(ContentType.JSON)
                 .body(String.format("{\"name\": \"%s\"}", projectName))
-                //                    .body( "{\"name\": \"" + projectName + "\"}")`
                 .when()
-                .post("/projects")
-                .then()
-                .assertThat()
-                .statusCode(200)
-                .body("name", Matchers.equalTo(projectName))
-                .header("Content-Type", Matchers.equalTo("application/json"))
-                .and()
-                .extract().path("id");
-        return projectId;
+                .post("/projects");
     }
 }
