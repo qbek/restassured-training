@@ -3,8 +3,8 @@ package org.example.steps;
 import io.restassured.http.ContentType;
 import net.serenitybdd.rest.SerenityRest;
 import net.thucydides.core.annotations.Step;
+import org.example.model.NewTaskPayload;
 import org.hamcrest.Matchers;
-import org.json.JSONObject;
 
 import static java.lang.String.format;
 
@@ -12,13 +12,12 @@ public class TaskSteps {
 
     @Step
     public String addTaskToTheProject(String taskName, String projectId) {
-        JSONObject payload = new JSONObject();
-        payload.put("content", taskName);
-        payload.put("project_id", projectId);
+        var payload = new NewTaskPayload(taskName);
+        payload.setProject_id(projectId);
 
         return SerenityRest
                 .given()
-                .body(payload.toString())
+                .body(payload)
                 .contentType(ContentType.JSON)
                 .when()
                 .post("/tasks")

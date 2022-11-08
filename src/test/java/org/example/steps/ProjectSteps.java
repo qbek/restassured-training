@@ -4,6 +4,9 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import net.serenitybdd.rest.SerenityRest;
 import net.thucydides.core.annotations.Step;
+import org.example.model.NewProjectPayload;
+import org.example.model.ProjectDetailsPayload;
+import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 
 import static java.lang.String.format;
@@ -68,21 +71,27 @@ public class ProjectSteps {
 
     @Step("Verification of create project response. Expect name: {1}")
     public String verifyProjectCreateResponse(Response response, String projectName) {
-        return response.then()
+        var projectDetails = response.then()
                 .assertThat()
                     .statusCode(200)
-                    .body("name", Matchers.equalTo(projectName))
                     .header("Content-Type", Matchers.equalTo("application/json"))
                 .and()
-                .extract().path("id");
+                .extract().body().as(ProjectDetailsPayload.class);
+
+        MatcherAssert.assertThat("Project should have correct name",
+                projectDetails.getName(),
+                Matchers.equalTo(projectName));
+
+        return projectDetails.getId();
     }
 
     @Step
     public Response sendCreateNewProjectRequest(String projectName) {
+        var payload = new NewProjectPayload(projectName);
         return SerenityRest
                 .given()
                 .contentType(ContentType.JSON)
-                .body(String.format("{\"name\": \"%s\"}", projectName))
+                .body(payload)
                 .when()
                 .post("/projects");
     }
