@@ -13,10 +13,17 @@ import static java.lang.String.format;
 
 public class ProjectSteps {
 
+    private String projectName;
+    private String projectId;
+
+    public String getProjectId() {
+        return projectId;
+    }
+
     @Step("User checks all projects list")
-    public void userChecksAllProjectsList(String projectId, String projectName) {
+    public void userChecksAllProjectsList() {
         var response = sendGetAllProjectsRequest();
-        verifyGetAllProjectsResponse(response, projectId, projectName);
+        verifyGetAllProjectsResponse(response, this.projectId, this.projectName);
     }
 
     @Step("Verify project list. Project exitst on the list: id '{1}', name '{2}'")
@@ -39,9 +46,9 @@ public class ProjectSteps {
     }
 
     @Step("User checks project details")
-    public void userChecksProjectDetails(String projectId, String projectName) {
-        var response = sendGetProjectDetailsRequest(projectId);
-        verifyProjectDetailsResponse(response, projectId, projectName);
+    public void userChecksProjectDetails() {
+        var response = sendGetProjectDetailsRequest(this.projectId);
+        verifyProjectDetailsResponse(response, this.projectId, this.projectName);
     }
 
     @Step("Verify project details: expected id '{1}', expected name '{2}'")
@@ -63,10 +70,10 @@ public class ProjectSteps {
     }
 
     @Step("User creates a new project")
-    public String userCreatesANewProject(String projectName) {
-        var response = sendCreateNewProjectRequest(projectName);
-        var projectId = verifyProjectCreateResponse(response, projectName);
-        return projectId;
+    public void userCreatesANewProject(String projectName) {
+        this.projectName = projectName;
+        var response = sendCreateNewProjectRequest(this.projectName);
+        this.projectId = verifyProjectCreateResponse(response, this.projectName);
     }
 
     @Step("Verification of create project response. Expect name: {1}")

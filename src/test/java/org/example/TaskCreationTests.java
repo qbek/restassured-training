@@ -15,10 +15,10 @@ public class TaskCreationTests extends BaseSetup {
     @Test
     public void userCanAddTaskToTheProject() {
         var projectName = generator.funnyName().name();
-        var projectId = precondition.userCreatesANewProject(projectName);
+        precondition.userCreatesANewProject(projectName);
 
         var taskName = generator.chuckNorris().fact();
-        var taskId = steps.addTaskToTheProject(taskName, projectId);
+        var taskId = steps.addTaskToTheProject(taskName, precondition.getProjectId());
 
         steps.checkIfTaskIsCreated(taskId, taskName);
         steps.checkIfTaskIsOnAllTasksList(taskId, taskName);

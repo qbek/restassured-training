@@ -9,13 +9,12 @@ public class ProjectCreationTests extends BaseSetup {
     @Steps
     ProjectSteps steps;
 
-
-
     @Test
     public void userCanCreateANewProject() {
         var projectName = generator.lebowski().character();
-        var projectId = steps.userCreatesANewProject(projectName);
-        steps.userChecksProjectDetails(projectId, projectName);
-        steps.userChecksAllProjectsList(projectId, projectName);
+
+        steps.userCreatesANewProject(projectName);
+        steps.userChecksProjectDetails();
+        steps.userChecksAllProjectsList();
     }
 }
