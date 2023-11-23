@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 public class ProjectTests extends BaseSetup {
 
-    ProjectSteps steps = new ProjectSteps();
+    ProjectSteps steps = new ProjectSteps(testData);
 
     @Test
     public void userCanCreateANewProject() {

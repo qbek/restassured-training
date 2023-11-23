@@ -14,9 +14,8 @@ public class TaskTests extends BaseSetup {
         preconditions.userCreatesANewProject();
         preconditions.userChecksProjectDetails();
 
-        steps.userAddsTaskToTheProject(preconditions);
+        steps.userAddsTaskToTheProject(preconditions.getProject());
         steps.userCheckTaskDetails();
         steps.userCheckAllTasksList();
-
     }
 }
