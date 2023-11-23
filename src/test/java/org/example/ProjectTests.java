@@ -23,22 +23,14 @@ public class ProjectTests {
         RestAssured.baseURI = "https://api.todoist.com";
         RestAssured.basePath = "/rest/v2";
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-
-        RequestSpecBuilder reqSpecBuilder = new RequestSpecBuilder();
-        reqSpecBuilder.addHeader("Authorization", "Bearer d469ce54eca3a7ca5b6b5e7d4c8d51ced8d4c7b1");
-//                .log(LogDetail.ALL);
-        baseReqSpec = reqSpecBuilder.build();
-//        RestAssured.requestSpecification = reqSpecBuilder.build();
     }
 
     @Test
     public void userCanCreateANewProject() {
-        var projectName = "Szkolenie RestAssured + JAVA";
-        steps.userCreatesANewProject(projectName);
-        steps.userChecksProjectDetails(projectName);
-        steps.userChecksAllProjectsList(projectName);
+        steps.userCreatesANewProject();
+        steps.userChecksProjectDetails();
+        steps.userChecksAllProjectsList();
     }
-
 }
 
 

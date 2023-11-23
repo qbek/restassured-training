@@ -1,71 +1,32 @@
 package org.example.steps;
 
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-import org.example.ProjectTests;
+import io.restassured.response.Response;
+import org.example.steps.project.ProjectClient;
+import org.example.steps.project.ProjectVerificator;
 import org.hamcrest.Matchers;
 
 public class ProjectSteps {
 
+    private ProjectClient client = new ProjectClient();
+    private ProjectVerificator verify = new ProjectVerificator();
     private String projectId;
+    private String projectName;
 
-    public void userCreatesANewProject(String projectName) {
-        //user creates a new project
-        var payload = String.format("{\"name\": \"%s\"}", projectName);
-        projectId = RestAssured
-                .given()
-                .spec(ProjectTests.baseReqSpec)
-                .contentType(ContentType.JSON)
-                .body(payload)
-                .when()
-                .post("/projects")
-                .then()
-//                    .log().all()
-                .assertThat()
-                .statusCode(200)
-                .header("Content-Type", Matchers.containsString("json"))
-                .body("name", Matchers.equalTo(projectName))
-                .and()
-                .extract().path("id");
+
+    public void userCreatesANewProject() {
+        projectName = "Szkolenie RestAssured + JAVA";
+        Response resp = client.sendCreateReq(projectName);
+        verify.verifyProjectDetails(resp, projectName);
+        projectId = resp.then().extract().path("id");
     }
 
-    public void userChecksProjectDetails(String projectName) {
-        //user checks project details
-        RestAssured
-                .given()
-                .spec(ProjectTests.baseReqSpec)
-                .pathParam("id", projectId)
-                .when()
-                //konkatenacja stringow
-//                    .get("/projects/" + projectId)
-                // szablony tekstu
-//                    .get(String.format("/projects/%s", projectId))
-                .get("/projects/{id}")
-                .then()
-//                    .log().all()
-                .assertThat()
-                .statusCode(200)
-                .body("id", Matchers.equalTo(projectId))
-                .body("name", Matchers.equalTo(projectName));
+    public void userChecksProjectDetails() {
+        Response resp = client.sendGetProjectDetails(projectId);
+        verify.verifyProjectDetails(resp, projectName, projectId);
     }
 
-    public void userChecksAllProjectsList(String projectName) {
-
-        //user checks all project list
-        var getNameByProjectId = String.format("find{ it.id == \"%s\" }.name", projectId );
-        var getProjectByProjectId = String.format("find{ it.id == \"%s\" }", projectId );
-
-        RestAssured
-                .given()
-                .spec(ProjectTests.baseReqSpec)
-                .when()
-                .get("/projects")
-                .then()
-//                    .log().all()
-                .assertThat()
-                .statusCode(200)
-                .body(getProjectByProjectId, Matchers.notNullValue())
-                .body(getNameByProjectId, Matchers.equalTo(projectName));
-
+    public void userChecksAllProjectsList() {
+        Response resp = client.sendGetAllProjects();
+        verify.verifyAllProjectsList(resp, projectName, projectId);
     }
 }
