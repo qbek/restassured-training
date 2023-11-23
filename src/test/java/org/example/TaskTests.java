@@ -6,15 +6,15 @@ import org.junit.jupiter.api.Test;
 
 public class TaskTests extends BaseSetup {
 
-    ProjectSteps preconditions = new ProjectSteps();
-    TaskSteps steps = new TaskSteps();
+    ProjectSteps preconditions = new ProjectSteps(testData);
+    TaskSteps steps = new TaskSteps(testData);
 
     @Test
     public void userCanAddTaskToTheProject() {
         preconditions.userCreatesANewProject();
         preconditions.userChecksProjectDetails();
 
-        steps.userAddsTaskToTheProject(preconditions.getProject());
+        steps.userAddsTaskToTheProject();
         steps.userCheckTaskDetails();
         steps.userCheckAllTasksList();
     }

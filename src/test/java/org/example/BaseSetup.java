@@ -10,8 +10,6 @@ public class BaseSetup {
 
     @BeforeAll
     public static void setup() {
-        RestAssured.baseURI = "https://api.todoist.com";
-        RestAssured.basePath = "/rest/v2";
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 }
