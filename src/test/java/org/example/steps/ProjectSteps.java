@@ -12,7 +12,6 @@ public class ProjectSteps {
     private String projectId;
     private String projectName;
 
-
     public void userCreatesANewProject() {
         projectName = "Szkolenie RestAssured + JAVA";
         Response resp = client.sendCreateReq(projectName);
@@ -28,5 +27,9 @@ public class ProjectSteps {
     public void userChecksAllProjectsList() {
         Response resp = client.sendGetAllProjects();
         verify.verifyAllProjectsList(resp, projectName, projectId);
+    }
+
+    public String getId() {
+        return projectId;
     }
 }
