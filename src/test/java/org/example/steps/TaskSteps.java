@@ -18,8 +18,7 @@ public class TaskSteps {
     }
 
     public void userAddsTaskToTheProject() {
-        var task = new Task("TO jest kolejne zadanie");
-        testData.setTestData("task", task);
+        var task = testData.createTaskData();
         var project = (Project) testData.getTestData("project");
         var response = client.sendCreateTask(task.getName(), project.getId());
         verify.verifyTaskDetails(response, task.getName(), project.getId());

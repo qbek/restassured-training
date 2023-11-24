@@ -17,8 +17,7 @@ public class ProjectSteps {
     }
 
     public void userCreatesANewProject() {
-        var project = new Project("Szkolenie RestAssured + JAVA");
-        testData.setTestData("project", project);
+        var project = testData.createProjectData();
         Response resp = client.sendCreateReq(project.getName());
         verify.verifyProjectDetails(resp, project.getName());
         project.setId(resp.then().extract().path("id"));
