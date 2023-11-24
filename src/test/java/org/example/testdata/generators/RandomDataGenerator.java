@@ -4,7 +4,7 @@ import com.github.javafaker.Faker;
 import org.example.testdata.Project;
 import org.example.testdata.Task;
 
-public class RandomDataGenerator {
+public class RandomDataGenerator implements IDataGenerator {
 
     private static Faker faker = new Faker();
 
