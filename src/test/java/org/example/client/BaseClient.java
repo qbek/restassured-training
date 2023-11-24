@@ -2,6 +2,7 @@ package org.example.client;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.filter.log.LogDetail;
 import io.restassured.http.Method;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -31,11 +32,14 @@ public class BaseClient {
         reqSpecBuilder
                 .addHeader("Authorization", "Bearer " + testCfg.getProperty("todoistToken"))
                 .setBaseUri(testCfg.getProperty("baseUri"))
-                .setBasePath(testCfg.getProperty("basePath"));
+                .setBasePath(testCfg.getProperty("basePath"))
+                .log(LogDetail.ALL);
         return reqSpecBuilder;
     }
 
     protected Response sendRequest(Method method, RequestSpecification spec, String path) {
-        return RestAssured.given().spec(spec).when().request(method, path);
+        var response = RestAssured.given().spec(spec).when().request(method, path);
+        response.then().log().all();
+        return response;
     }
 }

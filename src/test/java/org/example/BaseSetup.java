@@ -10,6 +10,6 @@ public class BaseSetup {
 
     @BeforeAll
     public static void setup() {
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+//        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 }
