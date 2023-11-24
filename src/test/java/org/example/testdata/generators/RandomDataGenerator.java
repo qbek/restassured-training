@@ -15,4 +15,9 @@ public class RandomDataGenerator implements IDataGenerator {
     public Task getTask() {
         return new Task(faker.chuckNorris().fact());
     }
+
+    @Override
+    public String getType() {
+        return "random";
+    }
 }

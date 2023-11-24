@@ -13,4 +13,9 @@ public class JiraDataGenerator implements IDataGenerator {
     public Task getTask() {
         return new Task("Task from JIRA");
     }
+
+    @Override
+    public String getType() {
+        return "jira";
+    }
 }

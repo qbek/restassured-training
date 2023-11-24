@@ -18,4 +18,6 @@ public class TaskTests extends BaseSetup {
         steps.userCheckTaskDetails();
         steps.userCheckAllTasksList();
     }
+
 }
+

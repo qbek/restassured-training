@@ -7,4 +7,5 @@ public interface IDataGenerator {
 
     Project getProject();
     Task getTask();
+    String getType();
 }

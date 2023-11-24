@@ -12,4 +12,9 @@ public class StaticDataGenerator implements IDataGenerator {
     public Task getTask() {
         return new Task("Statyczna nazwa zadania");
     }
+
+    @Override
+    public String getType() {
+        return "static";
+    }
 }

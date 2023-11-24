@@ -5,11 +5,18 @@ import org.example.testdata.generators.JiraDataGenerator;
 import org.example.testdata.generators.RandomDataGenerator;
 import org.example.testdata.generators.StaticDataGenerator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TestDataGenerator {
 
-    private IDataGenerator randomData = new RandomDataGenerator();
-    private IDataGenerator staticData = new StaticDataGenerator();
-    private IDataGenerator jiraData = new JiraDataGenerator();
+    private List<IDataGenerator> generators = new ArrayList<>();
+
+    public TestDataGenerator() {
+        generators.add(new RandomDataGenerator());
+        generators.add(new StaticDataGenerator());
+        generators.add(new JiraDataGenerator());
+    }
 
     public Project createNewProjectData() {
         return selectDataGenerator().getProject();
@@ -21,12 +28,9 @@ public class TestDataGenerator {
 
     private IDataGenerator selectDataGenerator() {
         var dataType = System.getProperty("td", "random");
-
-        switch (dataType) {
-            case "random": return randomData;
-            case "static": return staticData;
-            case "jira": return jiraData;
-            default: throw new RuntimeException("Not supported test data generator");
+        for (var generator : generators) {
+            if (generator.getType().equals(dataType)) return generator;
         }
+        throw new RuntimeException("Test data generator not found");
     }
 }
